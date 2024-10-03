@@ -1,0 +1,4 @@
+ruby_version: 3.3
+format: progress
+ignore:
+  - 'lib/jmeter_perf/dsl/*' # This is automatically generated code

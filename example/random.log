@@ -1,0 +1,49 @@
+2024-10-17 09:15:18,795 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2024-10-17 09:15:18,805 INFO o.a.j.JMeter: Loading user properties from: /opt/homebrew/Cellar/jmeter/5.6.3/libexec/bin/user.properties
+2024-10-17 09:15:18,805 INFO o.a.j.JMeter: Loading system properties from: /opt/homebrew/Cellar/jmeter/5.6.3/libexec/bin/system.properties
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: Version 5.6.3
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: java.version=21.0.4
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: os.name=Mac OS X
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: os.arch=aarch64
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: os.version=14.7
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: file.encoding=UTF-8
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: java.awt.headless=true
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: Max memory     =1073741824
+2024-10-17 09:15:18,808 INFO o.a.j.JMeter: Available Processors =10
+2024-10-17 09:15:18,813 INFO o.a.j.JMeter: Default Locale=English (EN)
+2024-10-17 09:15:18,813 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2024-10-17 09:15:18,813 INFO o.a.j.JMeter: JMeterHome=/opt/homebrew/Cellar/jmeter/5.6.3/libexec
+2024-10-17 09:15:18,813 INFO o.a.j.JMeter: user.dir  =/Users/jeanluis.urena/Projects/jmeter_perf/example
+2024-10-17 09:15:18,814 INFO o.a.j.JMeter: PWD       =/Users/jeanluis.urena/Projects/jmeter_perf/example
+2024-10-17 09:15:18,815 INFO o.a.j.JMeter: IP: 192.168.1.235 Name: Jean Luis X9CK0310Y7 FullName: jeanluick0310y7.fios-router.home
+2024-10-17 09:15:18,823 INFO o.a.j.s.FileServer: Default base='/Users/jeanluis.urena/Projects/jmeter_perf/example'
+2024-10-17 09:15:18,824 INFO o.a.j.s.FileServer: Set new base='/Users/jeanluis.urena/Projects/jmeter_perf/example'
+2024-10-17 09:15:18,926 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2024-10-17 09:15:18,951 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2024-10-17 09:15:18,953 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2024-10-17 09:15:18,954 INFO o.a.j.s.SaveService: Loading file: random.jmx
+2024-10-17 09:15:18,990 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2024-10-17 09:15:18,990 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2024-10-17 09:15:18,991 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2024-10-17 09:15:18,991 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2024-10-17 09:15:18,991 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2024-10-17 09:15:18,991 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2024-10-17 09:15:18,994 INFO o.a.j.JMeter: Creating summariser <summary>
+2024-10-17 09:15:19,004 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2024-10-17 09:15:19,004 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2024-10-17 09:15:19,004 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2024-10-17 09:15:19,006 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2024-10-17 09:15:19,006 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2024-10-17 09:15:19,037 INFO o.a.j.r.ClassFinder: Will scan jar /opt/homebrew/Cellar/jmeter/5.6.3/libexec/lib/ext/jmeter-plugins-manager-1.10.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-10-17 09:15:19,079 INFO o.a.j.r.ClassFinder: Will scan jar /opt/homebrew/Cellar/jmeter/5.6.3/libexec/lib/ext/jmeter-plugins-cohendeffectsize-1.0.0.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2024-10-17 09:15:19,083 INFO o.a.j.JMeter: Running test (1729170919083)
+2024-10-17 09:15:19,093 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : ThreadGroup
+2024-10-17 09:15:19,094 INFO o.a.j.e.StandardJMeterEngine: Starting 10 threads for group ThreadGroup.
+2024-10-17 09:15:19,094 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2024-10-17 09:15:19,094 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=10 ramp-up=5 delayedStart=true
+2024-10-17 09:15:19,094 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2024-10-17 09:15:19,095 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2024-10-17 09:15:19,095 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2024-10-17 09:15:19,095 INFO o.a.j.r.Summariser: summary =      0 in 00:00:00 = ******/s Avg:     0 Min: 9223372036854775807 Max: -9223372036854775808 Err:     0 (0.00%)
