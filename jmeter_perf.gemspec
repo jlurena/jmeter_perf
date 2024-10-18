@@ -7,13 +7,13 @@ Gem::Specification.new do |spec|
   spec.version = JmeterPerf::VERSION
   spec.authors = ["Jean Luis Urena"]
   spec.email = ["eljean@live.com"]
+  spec.license = "MIT"
 
   spec.summary = "Run performance tests for your Ruby project using JMeter"
   spec.description = "Run performance tests, generate reports and more using JMeter"
   spec.homepage = "https://github.com/jlurena/jmeter_perf"
   spec.required_ruby_version = ">= 3.0.0"
-
-  spec.metadata["allowed_push_host"] = "TODO:"
+  spec.metadata["allowed_push_host"] = "http://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/jlurena/jmeter_perf"
@@ -32,10 +32,4 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "nokogiri", "~> 1.16", ">= 1.16.7"
   spec.add_dependency "tdigest", "~> 0.2.1"
-
-  spec.add_development_dependency "sorbet-static-and-runtime"
-  spec.add_development_dependency "pry-byebug", "~> 3.10", ">= 3.10.1"
-  spec.add_development_dependency "rake", "~> 13.2", ">= 13.2.1"
-  spec.add_development_dependency "rspec", "~> 3.13"
-  spec.add_development_dependency "standard", "~> 1.40"
 end

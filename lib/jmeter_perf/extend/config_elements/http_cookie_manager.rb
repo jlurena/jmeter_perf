@@ -5,7 +5,7 @@ module JmeterPerf
     def http_cookie_manager(params = {}, &)
       params[:clearEachIteration] = true if params.key? :clear_each_iteration
 
-      node = JmeterPerf::HttpCookieManager.new(params)
+      node = JmeterPerf::HTTPCookieManager.new(params)
 
       params[:user_defined_cookies]&.each { |cookie| add_cookie_to_collection(cookie, node) }
 

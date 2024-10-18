@@ -21,6 +21,10 @@ module JmeterPerf
       puts to_xml
     end
 
+    def to_doc
+      doc.clone
+    end
+
     def jmx(out_jmx: "ruby-jmeter.jmx")
       File.write(out_jmx, to_xml)
       logger.info "JMX saved to: #{out_jmx}"

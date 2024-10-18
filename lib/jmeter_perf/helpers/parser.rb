@@ -7,8 +7,7 @@ module JmeterPerf
       else
         parse_url(params)
         params[:fill_in] ||= {}
-        return if params[:params].nil?
-        params[:params].split("&").each do |param|
+        params[:params]&.split("&")&.each do |param|
           name, value = param.split("=")
           params[:fill_in][name] ||= []
           params[:fill_in][name] << value

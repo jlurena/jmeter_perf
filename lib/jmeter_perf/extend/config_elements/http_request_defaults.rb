@@ -5,7 +5,7 @@ module JmeterPerf
       params[:concurrentDwn] = true if params.key? :use_concurrent_pool
       params[:concurrentPool] = params[:use_concurrent_pool] if params.key? :use_concurrent_pool
 
-      node = JmeterPerf::HttpRequestDefaults.new(params).tap do |node|
+      node = JmeterPerf::HTTPRequestDefaults.new(params).tap do |node|
         if params[:urls_must_match]
           node.doc.children.first.add_child(
             Nokogiri::XML(<<-EOS.strip_heredoc).children

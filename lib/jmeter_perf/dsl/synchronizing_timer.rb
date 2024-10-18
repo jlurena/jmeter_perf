@@ -1,8 +1,8 @@
 module JmeterPerf
   class DSL
-    def synchronizing_timer(params={}, &block)
+    def synchronizing_timer(params = {}, &)
       node = JmeterPerf::SynchronizingTimer.new(params)
-      attach_node(node, &block)
+      attach_node(node, &)
     end
   end
 
@@ -10,13 +10,13 @@ module JmeterPerf
     attr_accessor :doc
     include Helper
 
-    def initialize(params={})
-      testname = params.is_a?(Array) ? 'SynchronizingTimer' : (params[:name] || 'SynchronizingTimer')
-      @doc = Nokogiri::XML(<<-EOS.strip_heredoc)
-<SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="#{testname}" enabled="true">
-  <intProp name="groupSize">0</intProp>
-  <longProp name="timeoutInMs">0</longProp>
-</SyncTimer>
+    def initialize(params = {})
+      testname = params.is_a?(Array) ? "SynchronizingTimer" : (params[:name] || "SynchronizingTimer")
+      @doc = Nokogiri::XML(<<~EOS.strip_heredoc)
+        <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="#{testname}" enabled="true">
+          <intProp name="groupSize">0</intProp>
+          <longProp name="timeoutInMs">0</longProp>
+        </SyncTimer>
       EOS
       update params
       update_at_xpath params if params.is_a?(Hash) && params[:update_at_xpath]

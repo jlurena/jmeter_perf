@@ -1,8 +1,8 @@
 module JmeterPerf
   class DSL
-    def http_cookie_manager(params={}, &block)
+    def http_cookie_manager(params = {}, &)
       node = JmeterPerf::HTTPCookieManager.new(params)
-      attach_node(node, &block)
+      attach_node(node, &)
     end
   end
 
@@ -10,15 +10,15 @@ module JmeterPerf
     attr_accessor :doc
     include Helper
 
-    def initialize(params={})
-      testname = params.is_a?(Array) ? 'HTTPCookieManager' : (params[:name] || 'HTTPCookieManager')
-      @doc = Nokogiri::XML(<<-EOS.strip_heredoc)
-<CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="#{testname}" enabled="true">
-  <collectionProp name="CookieManager.cookies"/>
-  <boolProp name="CookieManager.clearEachIteration">false</boolProp>
-  <stringProp name="CookieManager.policy">default</stringProp>
-  <stringProp name="CookieManager.implementation">org.apache.jmeter.protocol.http.control.HC4CookieHandler</stringProp>
-</CookieManager>
+    def initialize(params = {})
+      testname = params.is_a?(Array) ? "HTTPCookieManager" : (params[:name] || "HTTPCookieManager")
+      @doc = Nokogiri::XML(<<~EOS.strip_heredoc)
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="#{testname}" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <stringProp name="CookieManager.policy">default</stringProp>
+          <stringProp name="CookieManager.implementation">org.apache.jmeter.protocol.http.control.HC4CookieHandler</stringProp>
+        </CookieManager>
       EOS
       update params
       update_at_xpath params if params.is_a?(Hash) && params[:update_at_xpath]
