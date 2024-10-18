@@ -1,8 +1,8 @@
 module JmeterPerf
   class DSL
-    def test_plan(params={}, &block)
+    def test_plan(params = {}, &)
       node = JmeterPerf::TestPlan.new(params)
-      attach_node(node, &block)
+      attach_node(node, &)
     end
   end
 
@@ -10,18 +10,18 @@ module JmeterPerf
     attr_accessor :doc
     include Helper
 
-    def initialize(params={})
-      testname = params.is_a?(Array) ? 'TestPlan' : (params[:name] || 'TestPlan')
-      @doc = Nokogiri::XML(<<-EOS.strip_heredoc)
-<TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="#{testname}" enabled="true">
-  <stringProp name="TestPlan.comments"/>
-  <boolProp name="TestPlan.functional_mode">false</boolProp>
-  <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
-  <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="#{testname}" enabled="true">
-    <collectionProp name="Arguments.arguments"/>
-  </elementProp>
-  <stringProp name="TestPlan.user_define_classpath"/>
-</TestPlan>
+    def initialize(params = {})
+      testname = params.is_a?(Array) ? "TestPlan" : (params[:name] || "TestPlan")
+      @doc = Nokogiri::XML(<<~EOS.strip_heredoc)
+        <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="#{testname}" enabled="true">
+          <stringProp name="TestPlan.comments"/>
+          <boolProp name="TestPlan.functional_mode">false</boolProp>
+          <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+          <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="#{testname}" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="TestPlan.user_define_classpath"/>
+        </TestPlan>
       EOS
       update params
       update_at_xpath params if params.is_a?(Hash) && params[:update_at_xpath]

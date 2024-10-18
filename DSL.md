@@ -97,8 +97,8 @@
   `html_link_parser`
 - HTMLParameterMask
   `html_parameter_mask`
-- HTTPUrlRe_writingModifier
-  `http_url_re_writing_modifier`
+- HTTPUrlRewritingModifier
+  `http_url_rewriting_modifier`
 - JDBCPreprocessor
   `jdbc_preprocessor`
 - JSR223Preprocessor
@@ -109,8 +109,8 @@
   `user_parameters`
 - AccessLogSampler
   `access_log_sampler`
-- AJP_1_3Sampler
-  `ajp_1_3_sampler`
+- AJP13Sampler
+  `ajp13_sampler`
 - BeanShellSampler
   `bean_shell_sampler`
 - BSFSampler
@@ -125,8 +125,8 @@
   `java_request`
 - JDBCRequest
   `jdbc_request`
-- JMSPoint_to_Point
-  `jms_point_to_point`
+- JMSPointtoPoint
+  `jms_pointto_point`
 - JMSPublisher
   `jms_publisher`
 - JMSSubscriber
@@ -145,7 +145,7 @@
   `os_process_sampler`
 - SMTPSampler
   `smtp_sampler`
-- SOAP_Xml_RPCRequest
+- SOAPXmlRPCRequest
   `soap_xml_rpc_request`
 - TCPSampler
   `tcp_sampler`
@@ -155,7 +155,7 @@
   `bean_shell_postprocessor`
 - BSFPostprocessor
   `bsf_postprocessor`
-- CSS_JqueryExtractor
+- CSSJqueryExtractor
   `css_jquery_extractor`
 - DebugPostprocessor
   `debug_postprocessor`
@@ -207,8 +207,8 @@
   `bsf_listener`
 - ComparisonAssertionVisualizer
   `comparison_assertion_visualizer`
-- DistributionGraph_alpha_
-  `distribution_graph_alpha_`
+- DistributionGraphalpha
+  `distribution_graphalpha`
 - GenerateSummaryResults
   `generate_summary_results`
 - GraphResults

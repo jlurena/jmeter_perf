@@ -33,7 +33,6 @@ namespace :test do
       comparator = JmeterPerf::Report::Comparator.new(base_summary, summary, "#{base_summary.name}_vs_#{summary.name}")
       comparator.generate_reports(output_dir: "tmp")
     end
-
   ensure
     Process.kill("TERM", pid)
     puts "Rails server stopped."

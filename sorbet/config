@@ -1,0 +1,5 @@
+--dir
+.
+--ignore=example/
+--ignore=tmp/
+--ignore=vendor/

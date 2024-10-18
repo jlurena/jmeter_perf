@@ -28,7 +28,11 @@ class String
       ($1) ? "_#{substituted}" : substituted
     end
 
-    string.gsub!(/[^a-zA-Z0-9]/, '_')
+    string.gsub!(/[^a-zA-Z0-9]/, "")
     string
+  end
+
+  def strip_heredoc
+    gsub(/^#{self[/\A\s*/]}/, "")
   end
 end

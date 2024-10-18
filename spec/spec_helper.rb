@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+require "simplecov"
+SimpleCov.start do
+  add_filter "/spec/"
+  add_filter "/lib/jmeter_perf/dsl/"
+end
+
 require "jmeter_perf"
 
 RSpec.configure do |config|

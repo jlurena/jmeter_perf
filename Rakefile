@@ -2,9 +2,10 @@
 
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
-require "standard/rake"
+require "rubocop/rake_task"
 Dir.glob("lib/tasks/*.rake").each { |r| load r }
 
 RSpec::Core::RakeTask.new(:spec)
+RuboCop::RakeTask.new(:rubocop)
 
-task default: [:standard, :spec]
+task default: [:rubocop, :spec]
