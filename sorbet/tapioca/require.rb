@@ -1,4 +1,15 @@
 # typed: true
 # frozen_string_literal: true
 
-# Add your extra requires here (`bin/tapioca require` can be used to bootstrap this list)
+require "bump/tasks"
+require "bundler/gem_tasks"
+require "csv"
+require "fileutils"
+require "nokogiri"
+require "pathname"
+require "pry-byebug"
+require "rspec/core/rake_task"
+require "rubocop/rake_task"
+require "simplecov"
+require "tdigest"
+require "uri"

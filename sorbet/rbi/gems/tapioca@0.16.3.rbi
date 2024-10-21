@@ -3545,23 +3545,20 @@ end
 # source://tapioca//lib/tapioca/version.rb#5
 Tapioca::VERSION = T.let(T.unsafe(nil), String)
 
-# source://tapioca//lib/tapioca/helpers/source_uri.rb#6
-module URI
-  include ::URI::RFC2396_REGEXP
-end
-
 # source://tapioca//lib/tapioca/helpers/source_uri.rb#7
 class URI::Source < ::URI::File
   # source://tapioca//lib/tapioca/helpers/source_uri.rb#65
   sig { params(v: T.nilable(::String)).returns(T::Boolean) }
   def check_host(v); end
 
+  # source://uri/0.12.1/uri/generic.rb#243
   def gem_name; end
 
   # source://tapioca//lib/tapioca/helpers/source_uri.rb#32
   sig { returns(T.nilable(::String)) }
   def gem_version; end
 
+  # source://uri/0.12.1/uri/generic.rb#283
   def line_number; end
 
   # source://tapioca//lib/tapioca/helpers/source_uri.rb#58
@@ -3597,5 +3594,3 @@ URI::Source::COMPONENT = T.let(T.unsafe(nil), Array)
 #
 # source://tapioca//lib/tapioca/helpers/source_uri.rb#26
 URI::Source::PARSER = T.let(T.unsafe(nil), URI::RFC2396_Parser)
-
-class URI::WSS < ::URI::WS; end

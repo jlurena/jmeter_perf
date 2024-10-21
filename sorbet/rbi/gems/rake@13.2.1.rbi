@@ -5,6 +5,12 @@
 # Please instead update this file by running `bin/tapioca gem rake`.
 
 
+# source://rake//lib/rake/clean.rb#63
+CLEAN = T.let(T.unsafe(nil), Rake::FileList)
+
+# source://rake//lib/rake/clean.rb#73
+CLOBBER = T.let(T.unsafe(nil), Rake::FileList)
+
 # :stopdoc:
 #
 # Some top level Constants.
@@ -512,6 +518,46 @@ Rake::Backtrace::SYS_KEYS = T.let(T.unsafe(nil), Array)
 
 # source://rake//lib/rake/backtrace.rb#5
 Rake::Backtrace::SYS_PATHS = T.let(T.unsafe(nil), Array)
+
+# source://rake//lib/rake/clean.rb#20
+module Rake::Cleaner
+  extend ::FileUtils::StreamUtils_
+  extend ::FileUtils
+
+  private
+
+  # source://rake//lib/rake/clean.rb#55
+  def cant_be_deleted?(path_name); end
+
+  # source://rake//lib/rake/clean.rb#31
+  def cleanup(file_name, **opts); end
+
+  # source://rake//lib/rake/clean.rb#25
+  def cleanup_files(file_names); end
+
+  # source://rake//lib/rake/clean.rb#40
+  def file_already_gone?(file_name); end
+
+  class << self
+    # source://rake//lib/rake/clean.rb#31
+    def cleanup(file_name, **opts); end
+
+    # source://rake//lib/rake/clean.rb#25
+    def cleanup_files(file_names); end
+
+    private
+
+    # @return [Boolean]
+    #
+    # source://rake//lib/rake/clean.rb#55
+    def cant_be_deleted?(path_name); end
+
+    # @return [Boolean]
+    #
+    # source://rake//lib/rake/clean.rb#40
+    def file_already_gone?(file_name); end
+  end
+end
 
 # Mixin for creating easily cloned objects.
 #
