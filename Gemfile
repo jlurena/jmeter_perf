@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 group :ci, :development, :test do
+  gem "bump", "~> 0.10.0"
   gem "rake", "~> 13.2", ">= 13.2.1"
   gem "standard", "~> 1.40"
 end

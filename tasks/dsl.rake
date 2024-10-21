@@ -1,9 +1,7 @@
-require_relative "../jmeter_perf/helpers/dsl_generator"
-require "pry-byebug"
-
 namespace :dsl do
   desc "Generate JmeterPerf::DSL methods"
   task :generate do
+    require_relative "../jmeter_perf/helpers/dsl_generator"
     # Rake tasks would be ran from root of the project
     lib_dir = Pathname(".").expand_path.join("lib")
     gem_dir = lib_dir.join("jmeter_perf")
