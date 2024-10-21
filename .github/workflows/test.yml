@@ -9,8 +9,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1.171.0
+        uses: ruby/setup-ruby@v1.197.0
         env:
           BUNDLE_WITH: test
         with:

@@ -5,6 +5,9 @@ on:
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}-lint
   cancel-in-progress: true
+permissions:
+  checks: write
+  contents: write
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -29,7 +32,7 @@ jobs:
           separator: " "
       - name: Set up Ruby
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: ruby/setup-ruby@v1.171.0
+        uses: ruby/setup-ruby@v1.197.0
         env:
           BUNDLE_ONLY: ci
         with:
@@ -39,7 +42,7 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: wearerequired/lint-action@v2
         env:
-          BUNDLE_ONLY: codeguard
+          BUNDLE_ONLY: ci
         with:
           auto_fix: true
           rubocop: true
