@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 group :ci, :development, :test do
   gem "rake", "~> 13.2", ">= 13.2.1"
-  gem "standard", "~> 1.40", require: false
+  gem "standard", "~> 1.40"
 end
 
 group :development, :test do

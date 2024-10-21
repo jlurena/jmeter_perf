@@ -2,63 +2,12 @@ name: CodeGuard
 on:
   pull_request:
   workflow_dispatch:
+  workflow_call:
 concurrency:
-  group: ${{ github.ref }}-${{ github.workflow }}
+  group: ${{ github.ref }}-${{ github.workflow }}-codeguard
   cancel-in-progress: true
 jobs:
-  linter:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v42
-        with:
-          files: |
-            **/*.{rb,ru,erb,rake,gemspec}
-            Gemfile
-            jmeter_perf.gemspec
-          files_ignore: |
-            .bundle/**/*
-            .git/**/*
-            sorbet/**/*
-            Gemfile.lock
-            tmp/**/*
-            vendor/**/*
-          separator: " "
-      - name: Set up Ruby
-        if: steps.changed-files.outputs.any_changed == 'true'
-        uses: ruby/setup-ruby@v1.171.0
-        env:
-          BUNDLE_ONLY: lint
-        with:
-          ruby-version: 3.2.2
-          bundler-cache: true
-      - name: Lint Code
-        if: steps.changed-files.outputs.any_changed == 'true'
-        uses: wearerequired/lint-action@v2
-        env:
-          BUNDLE_ONLY: codeguard
-        with:
-          auto_fix: true
-          rubocop: true
-          rubocop_command_prefix: bundle exec
-          rubocop_args: --parallel ${{ steps.changed-files.outputs.all_changed_files }}
-  spec:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1.171.0
-        env:
-          BUNDLE_WITH: test
-        with:
-          ruby-version: 3.2.2
-          bundler-cache: true
-      - name: Test
-        run: bundle exec rspec -f j -o tmp/rspec_results.json -f p
-      - name: RSpec Report
-        uses: SonicGarden/rspec-report-action@v5
-        with:
-          json-path: tmp/rspec_results.json
-        if: always()
+  lint:
+    uses: ./.github/workflows/lint.yml
+  test:
+    uses: ./.github/workflows/test.yml

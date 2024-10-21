@@ -1,0 +1,26 @@
+name: Release
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}-release
+  cancel-in-progress: true
+on:
+  push:
+    branches:
+      - main
+jobs:
+  codeguard:
+    uses: ./.github/workflows/codeguard.yml
+  release:
+    name: Release gem to RubyGems.org
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1.197.0
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true
+      - uses: rubygems/release-gem@v1
