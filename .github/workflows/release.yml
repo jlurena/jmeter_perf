@@ -48,7 +48,6 @@ jobs:
           add: "lib/jmeter_perf/version.rb"
           default_author: github_actions
           message: "Bump version to ${{ steps.semver.outputs.semver }}"
-          tag: "v${{ steps.semver.outputs.semver }}"
   release:
     name: Release gem to RubyGems.org
     needs: [version]
