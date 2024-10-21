@@ -8,6 +8,9 @@ on:
       - main
 jobs:
   codeguard:
+    permissions:
+      checks: write
+      contents: write
     uses: ./.github/workflows/codeguard.yml
   release:
     name: Release gem to RubyGems.org

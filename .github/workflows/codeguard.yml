@@ -8,6 +8,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   lint:
+    permissions:
+      checks: write
+      contents: write
     uses: ./.github/workflows/lint.yml
   test:
     uses: ./.github/workflows/test.yml
