@@ -40,7 +40,7 @@ jobs:
           bundler-cache: true
       - name: Lint Code
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: wearerequired/lint-action@v2
+        uses: wearerequired/lint-action@v2.3.0
         env:
           BUNDLE_ONLY: ci
         with:

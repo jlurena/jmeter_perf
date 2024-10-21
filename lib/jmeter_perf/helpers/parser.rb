@@ -1,3 +1,5 @@
+require "uri"
+
 module JmeterPerf
   module Parser
     def parse_http_request(params)
