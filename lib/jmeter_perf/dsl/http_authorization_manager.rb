@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element HTTPAuthorizationManager
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#httpauthorizationmanager
+    # @param [Hash] params Parameters for the HTTPAuthorizationManager element (default: `{}`).
+    # @yield block to attach to the HTTPAuthorizationManager element
+    # @return [JmeterPerf::HTTPAuthorizationManager], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def http_authorization_manager(params = {}, &)
       node = JmeterPerf::HTTPAuthorizationManager.new(params)
       attach_node(node, &)

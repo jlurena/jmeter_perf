@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element HTTPRequestDefaults
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#httprequestdefaults
+    # @param [Hash] params Parameters for the HTTPRequestDefaults element (default: `{}`).
+    # @yield block to attach to the HTTPRequestDefaults element
+    # @return [JmeterPerf::HTTPRequestDefaults], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def http_request_defaults(params = {}, &)
       node = JmeterPerf::HTTPRequestDefaults.new(params)
       attach_node(node, &)

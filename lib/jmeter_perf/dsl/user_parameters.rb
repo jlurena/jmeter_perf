@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element UserParameters
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#userparameters
+    # @param [Hash] params Parameters for the UserParameters element (default: `{}`).
+    # @yield block to attach to the UserParameters element
+    # @return [JmeterPerf::UserParameters], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def user_parameters(params = {}, &)
       node = JmeterPerf::UserParameters.new(params)
       attach_node(node, &)

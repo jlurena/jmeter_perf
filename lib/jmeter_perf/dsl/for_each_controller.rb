@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element ForEachController
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#foreachcontroller
+    # @param [Hash] params Parameters for the ForEachController element (default: `{}`).
+    # @yield block to attach to the ForEachController element
+    # @return [JmeterPerf::ForEachController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def for_each_controller(params = {}, &)
       node = JmeterPerf::ForEachController.new(params)
       attach_node(node, &)

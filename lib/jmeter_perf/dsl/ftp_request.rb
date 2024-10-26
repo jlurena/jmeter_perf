@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element FTPRequest
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#ftprequest
+    # @param [Hash] params Parameters for the FTPRequest element (default: `{}`).
+    # @yield block to attach to the FTPRequest element
+    # @return [JmeterPerf::FTPRequest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def ftp_request(params = {}, &)
       node = JmeterPerf::FTPRequest.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element RandomController
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#randomcontroller
+    # @param [Hash] params Parameters for the RandomController element (default: `{}`).
+    # @yield block to attach to the RandomController element
+    # @return [JmeterPerf::RandomController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def random_controller(params = {}, &)
       node = JmeterPerf::RandomController.new(params)
       attach_node(node, &)

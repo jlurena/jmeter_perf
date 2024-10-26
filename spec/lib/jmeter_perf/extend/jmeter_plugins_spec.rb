@@ -1,11 +1,13 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "#stepping_thread_group" do
-    let(:doc) do
+    let(:test_plan) do
       JmeterPerf.test do
         stepping_thread_group on_sample_error: "startnextloop", total_threads: 100, initial_delay: 1, start_threads: 2, add_threads: 3, start_every: 4, stop_threads: 5, stop_every: 6, flight_time: 7, rampup: 8
-      end.to_doc
+      end
     end
 
     let(:fragment) { doc.search("//kg.apc.jmeter.threads.SteppingThreadGroup").first }
@@ -51,12 +53,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
   end
 
   describe "#dummy_sampler" do
-    let(:doc) do
+    let(:test_plan) do
       JmeterPerf.test do
         threads do
           dummy_sampler name: "dummy sampler name", response_data: "Some response data"
         end
-      end.to_doc
+      end
     end
 
     let(:fragment) { doc.search("//kg.apc.jmeter.samplers.DummySampler").first }
@@ -71,7 +73,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
   end
 
   describe "#perfmon_collector" do
-    let(:doc) do
+    let(:test_plan) do
       JmeterPerf.test do
         threads do
           perfmon_collector name: "perfmon collector name",
@@ -83,7 +85,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
             filename: "perf.jtl",
             xml: false
         end
-      end.to_doc
+      end
     end
 
     let(:fragment) { doc.search("//kg.apc.jmeter.perfmon.PerfMonCollector").first }
@@ -104,14 +106,14 @@ RSpec.describe JmeterPerf::ExtendedDSL do
 
   describe "#redis_data_set" do
     context "random keep" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads do
             redis_data_set name: "redis data set name",
               host: "the_host",
               port: 1234
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//kg.apc.jmeter.config.redis.RedisDataSet").first }
@@ -134,12 +136,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "random remove" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads do
             redis_data_set remove: true
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//kg.apc.jmeter.config.redis.RedisDataSet").first }
@@ -156,7 +158,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
 
   describe "#jmx_collector" do
     context "passing all optionals" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           jmx_collector(
             name: "some jmx collector name",
@@ -167,7 +169,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
             attribute_key: "committed",
             jtl: "path/to/some/dir/file.jtl"
           )
-        end.to_doc
+        end
       end
 
       let(:fragment) {
@@ -200,7 +202,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     context "passing no optionals" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           jmx_collector(
             host: "127.0.0.1",
@@ -208,7 +210,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
             object_name: "java.lang:type=Threading",
             attribute_name: "ThreadCount"
           )
-        end.to_doc
+        end
       end
 
       let(:fragment) {

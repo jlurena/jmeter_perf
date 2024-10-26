@@ -1,12 +1,14 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "logic_controller" do
     describe "disabled elements" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           header name: "Accept", value: "*", enabled: false
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HeaderManager") }
@@ -17,14 +19,14 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#if_controller" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads do
             if_controller condition: "2>1" do
               visit url: "/"
             end
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//IfController").first }
@@ -35,14 +37,14 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#exists" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads do
             exists "apple" do
               visit url: "/"
             end
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//IfController").first }
@@ -53,14 +55,14 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#while_controller" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads do
             while_controller condition: "true" do
               visit url: "/"
             end
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//WhileController").first }
@@ -71,14 +73,14 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#counter" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads do
             visit url: "/" do
               counter start: 1, per_user: true
             end
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//CounterConfig").first }
@@ -89,14 +91,14 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#switch_controller" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads do
             switch_controller value: "cat" do
               visit url: "/"
             end
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//SwitchController").first }
@@ -107,7 +109,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     context "Nested controllers" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           simple_controller name: "node1.1" do
             simple_controller name: "node2.1"
@@ -117,7 +119,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
             simple_controller name: "node2.3"
           end
           simple_controller name: "node1.2"
-        end.to_doc
+        end
       end
 
       let(:node1_1) { doc.search("//GenericController[@testname='node1.1']").first }

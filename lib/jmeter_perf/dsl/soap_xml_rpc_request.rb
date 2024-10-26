@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element SOAPXmlRPCRequest
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#soapxmlrpcrequest
+    # @param [Hash] params Parameters for the SOAPXmlRPCRequest element (default: `{}`).
+    # @yield block to attach to the SOAPXmlRPCRequest element
+    # @return [JmeterPerf::SOAPXmlRPCRequest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def soap_xml_rpc_request(params = {}, &)
       node = JmeterPerf::SOAPXmlRPCRequest.new(params)
       attach_node(node, &)

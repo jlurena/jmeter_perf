@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element XMLSchemaAssertion
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#xmlschemaassertion
+    # @param [Hash] params Parameters for the XMLSchemaAssertion element (default: `{}`).
+    # @yield block to attach to the XMLSchemaAssertion element
+    # @return [JmeterPerf::XMLSchemaAssertion], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def xml_schema_assertion(params = {}, &)
       node = JmeterPerf::XMLSchemaAssertion.new(params)
       attach_node(node, &)

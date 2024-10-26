@@ -1,13 +1,15 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "regular_expression_extractor" do
     describe "#regex" do
       context "standard scope" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             regex pattern: "pattern", name: "my_variable", match_number: 1, default: "424242"
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//RegexExtractor").first }
@@ -38,10 +40,10 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "variable scope" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             regex pattern: "pattern", name: "my_variable", variable: "test_variable"
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//RegexExtractor").first }

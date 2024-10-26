@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element SMIMEAssertion
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#smimeassertion
+    # @param [Hash] params Parameters for the SMIMEAssertion element (default: `{}`).
+    # @yield block to attach to the SMIMEAssertion element
+    # @return [JmeterPerf::SMIMEAssertion], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def smime_assertion(params = {}, &)
       node = JmeterPerf::SMIMEAssertion.new(params)
       attach_node(node, &)

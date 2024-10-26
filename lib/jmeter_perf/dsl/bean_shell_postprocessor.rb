@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element BeanShellPostprocessor
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#beanshellpostprocessor
+    # @param [Hash] params Parameters for the BeanShellPostprocessor element (default: `{}`).
+    # @yield block to attach to the BeanShellPostprocessor element
+    # @return [JmeterPerf::BeanShellPostprocessor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def bean_shell_postprocessor(params = {}, &)
       node = JmeterPerf::BeanShellPostprocessor.new(params)
       attach_node(node, &)

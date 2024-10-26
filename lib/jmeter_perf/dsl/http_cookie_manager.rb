@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element HTTPCookieManager
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#httpcookiemanager
+    # @param [Hash] params Parameters for the HTTPCookieManager element (default: `{}`).
+    # @yield block to attach to the HTTPCookieManager element
+    # @return [JmeterPerf::HTTPCookieManager], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def http_cookie_manager(params = {}, &)
       node = JmeterPerf::HTTPCookieManager.new(params)
       attach_node(node, &)

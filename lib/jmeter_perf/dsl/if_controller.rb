@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element IfController
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#ifcontroller
+    # @param [Hash] params Parameters for the IfController element (default: `{}`).
+    # @yield block to attach to the IfController element
+    # @return [JmeterPerf::IfController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def if_controller(params = {}, &)
       node = JmeterPerf::IfController.new(params)
       attach_node(node, &)

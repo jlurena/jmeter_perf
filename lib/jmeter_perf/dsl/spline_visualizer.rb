@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element SplineVisualizer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#splinevisualizer
+    # @param [Hash] params Parameters for the SplineVisualizer element (default: `{}`).
+    # @yield block to attach to the SplineVisualizer element
+    # @return [JmeterPerf::SplineVisualizer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def spline_visualizer(params = {}, &)
       node = JmeterPerf::SplineVisualizer.new(params)
       attach_node(node, &)

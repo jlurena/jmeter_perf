@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element KeystoreConfiguration
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#keystoreconfiguration
+    # @param [Hash] params Parameters for the KeystoreConfiguration element (default: `{}`).
+    # @yield block to attach to the KeystoreConfiguration element
+    # @return [JmeterPerf::KeystoreConfiguration], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def keystore_configuration(params = {}, &)
       node = JmeterPerf::KeystoreConfiguration.new(params)
       attach_node(node, &)

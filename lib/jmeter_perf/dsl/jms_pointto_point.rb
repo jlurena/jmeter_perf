@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JMSPointtoPoint
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jmspointtopoint
+    # @param [Hash] params Parameters for the JMSPointtoPoint element (default: `{}`).
+    # @yield block to attach to the JMSPointtoPoint element
+    # @return [JmeterPerf::JMSPointtoPoint], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jms_pointto_point(params = {}, &)
       node = JmeterPerf::JMSPointtoPoint.new(params)
       attach_node(node, &)

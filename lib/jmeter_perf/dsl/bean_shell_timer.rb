@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element BeanShellTimer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#beanshelltimer
+    # @param [Hash] params Parameters for the BeanShellTimer element (default: `{}`).
+    # @yield block to attach to the BeanShellTimer element
+    # @return [JmeterPerf::BeanShellTimer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def bean_shell_timer(params = {}, &)
       node = JmeterPerf::BeanShellTimer.new(params)
       attach_node(node, &)

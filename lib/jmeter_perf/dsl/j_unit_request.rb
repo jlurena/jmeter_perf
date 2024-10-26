@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JUnitRequest
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#junitrequest
+    # @param [Hash] params Parameters for the JUnitRequest element (default: `{}`).
+    # @yield block to attach to the JUnitRequest element
+    # @return [JmeterPerf::JUnitRequest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def j_unit_request(params = {}, &)
       node = JmeterPerf::JUnitRequest.new(params)
       attach_node(node, &)

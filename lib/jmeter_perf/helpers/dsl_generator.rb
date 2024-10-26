@@ -49,7 +49,7 @@ class DSLGenerator
       klass = element.attributes["testname"].to_s.classify
       method = klass.underscore
       [klass, method]
-    end
+    end.sort_by(&:first)
   end
 
   def create_dsl_files(results)
@@ -58,9 +58,15 @@ class DSLGenerator
 
     results.each do |element|
       klass = element.attributes["testname"].to_s.classify
+      puts "\tfor Element #{klass}"
       File.write("#{@dsl_dir}/#{klass.underscore}.rb", <<~EOC)
         module JmeterPerf
           class DSL
+            # DSL method synonymous with the JMeter Element #{klass}
+            # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation##{klass.downcase}
+            # @param [Hash] params Parameters for the #{klass} element (default: `{}`).
+            # @yield block to attach to the #{klass} element
+            # @return [JmeterPerf::#{klass}], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
             def #{klass.underscore}(params = {}, &)
               node = JmeterPerf::#{klass}.new(params)
               attach_node(node, &)

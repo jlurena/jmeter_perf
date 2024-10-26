@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JMSPublisher
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jmspublisher
+    # @param [Hash] params Parameters for the JMSPublisher element (default: `{}`).
+    # @yield block to attach to the JMSPublisher element
+    # @return [JmeterPerf::JMSPublisher], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jms_publisher(params = {}, &)
       node = JmeterPerf::JMSPublisher.new(params)
       attach_node(node, &)

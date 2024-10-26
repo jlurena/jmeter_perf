@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element CSVDataSetConfig
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#csvdatasetconfig
+    # @param [Hash] params Parameters for the CSVDataSetConfig element (default: `{}`).
+    # @yield block to attach to the CSVDataSetConfig element
+    # @return [JmeterPerf::CSVDataSetConfig], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def csv_data_set_config(params = {}, &)
       node = JmeterPerf::CSVDataSetConfig.new(params)
       attach_node(node, &)

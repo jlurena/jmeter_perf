@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element LoginConfigElement
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#loginconfigelement
+    # @param [Hash] params Parameters for the LoginConfigElement element (default: `{}`).
+    # @yield block to attach to the LoginConfigElement element
+    # @return [JmeterPerf::LoginConfigElement], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def login_config_element(params = {}, &)
       node = JmeterPerf::LoginConfigElement.new(params)
       attach_node(node, &)

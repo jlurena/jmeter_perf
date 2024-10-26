@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element LDAPExtendedRequestDefaults
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#ldapextendedrequestdefaults
+    # @param [Hash] params Parameters for the LDAPExtendedRequestDefaults element (default: `{}`).
+    # @yield block to attach to the LDAPExtendedRequestDefaults element
+    # @return [JmeterPerf::LDAPExtendedRequestDefaults], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def ldap_extended_request_defaults(params = {}, &)
       node = JmeterPerf::LDAPExtendedRequestDefaults.new(params)
       attach_node(node, &)

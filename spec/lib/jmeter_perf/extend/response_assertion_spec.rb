@@ -1,13 +1,15 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "response_assertion" do
     describe "#assert" do
       context "standard scope" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             assert contains: "We test, tune and secure your site"
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//ResponseAssertion").first }
@@ -26,10 +28,10 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "custom scope" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             assert "not-contains" => "Something in frames", :scope => "children"
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//ResponseAssertion").first }
@@ -48,10 +50,10 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "variable scope" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             assert "substring" => "Something in frames", :scope => "children", :variable => "test"
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//ResponseAssertion").first }

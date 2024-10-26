@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element TCPSamplerConfig
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#tcpsamplerconfig
+    # @param [Hash] params Parameters for the TCPSamplerConfig element (default: `{}`).
+    # @yield block to attach to the TCPSamplerConfig element
+    # @return [JmeterPerf::TCPSamplerConfig], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def tcp_sampler_config(params = {}, &)
       node = JmeterPerf::TCPSamplerConfig.new(params)
       attach_node(node, &)

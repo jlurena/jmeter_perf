@@ -1,15 +1,17 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "assertions" do
     describe "#assert" do
       context "json" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             visit "/" do
               assert json: ".key", value: "value"
             end
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.JSONPathAssertion").first }

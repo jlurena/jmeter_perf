@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JSR223Timer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jsr223timer
+    # @param [Hash] params Parameters for the JSR223Timer element (default: `{}`).
+    # @yield block to attach to the JSR223Timer element
+    # @return [JmeterPerf::JSR223Timer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jsr223_timer(params = {}, &)
       node = JmeterPerf::JSR223Timer.new(params)
       attach_node(node, &)

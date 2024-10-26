@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element MD5HexAssertion
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#md5hexassertion
+    # @param [Hash] params Parameters for the MD5HexAssertion element (default: `{}`).
+    # @yield block to attach to the MD5HexAssertion element
+    # @return [JmeterPerf::MD5HexAssertion], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def md5_hex_assertion(params = {}, &)
       node = JmeterPerf::MD5HexAssertion.new(params)
       attach_node(node, &)

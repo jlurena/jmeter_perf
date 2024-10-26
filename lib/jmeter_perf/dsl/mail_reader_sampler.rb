@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element MailReaderSampler
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#mailreadersampler
+    # @param [Hash] params Parameters for the MailReaderSampler element (default: `{}`).
+    # @yield block to attach to the MailReaderSampler element
+    # @return [JmeterPerf::MailReaderSampler], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def mail_reader_sampler(params = {}, &)
       node = JmeterPerf::MailReaderSampler.new(params)
       attach_node(node, &)

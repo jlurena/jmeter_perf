@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element WhileController
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#whilecontroller
+    # @param [Hash] params Parameters for the WhileController element (default: `{}`).
+    # @yield block to attach to the WhileController element
+    # @return [JmeterPerf::WhileController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def while_controller(params = {}, &)
       node = JmeterPerf::WhileController.new(params)
       attach_node(node, &)

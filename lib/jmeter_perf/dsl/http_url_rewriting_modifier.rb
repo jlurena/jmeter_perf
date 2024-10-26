@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element HTTPUrlRewritingModifier
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#httpurlrewritingmodifier
+    # @param [Hash] params Parameters for the HTTPUrlRewritingModifier element (default: `{}`).
+    # @yield block to attach to the HTTPUrlRewritingModifier element
+    # @return [JmeterPerf::HTTPUrlRewritingModifier], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def http_url_rewriting_modifier(params = {}, &)
       node = JmeterPerf::HTTPUrlRewritingModifier.new(params)
       attach_node(node, &)

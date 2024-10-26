@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element RandomVariable
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#randomvariable
+    # @param [Hash] params Parameters for the RandomVariable element (default: `{}`).
+    # @yield block to attach to the RandomVariable element
+    # @return [JmeterPerf::RandomVariable], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def random_variable(params = {}, &)
       node = JmeterPerf::RandomVariable.new(params)
       attach_node(node, &)

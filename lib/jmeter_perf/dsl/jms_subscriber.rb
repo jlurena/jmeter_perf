@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JMSSubscriber
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jmssubscriber
+    # @param [Hash] params Parameters for the JMSSubscriber element (default: `{}`).
+    # @yield block to attach to the JMSSubscriber element
+    # @return [JmeterPerf::JMSSubscriber], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jms_subscriber(params = {}, &)
       node = JmeterPerf::JMSSubscriber.new(params)
       attach_node(node, &)

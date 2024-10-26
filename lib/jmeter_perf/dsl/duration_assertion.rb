@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element DurationAssertion
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#durationassertion
+    # @param [Hash] params Parameters for the DurationAssertion element (default: `{}`).
+    # @yield block to attach to the DurationAssertion element
+    # @return [JmeterPerf::DurationAssertion], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def duration_assertion(params = {}, &)
       node = JmeterPerf::DurationAssertion.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element ThroughputController
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#throughputcontroller
+    # @param [Hash] params Parameters for the ThroughputController element (default: `{}`).
+    # @yield block to attach to the ThroughputController element
+    # @return [JmeterPerf::ThroughputController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def throughput_controller(params = {}, &)
       node = JmeterPerf::ThroughputController.new(params)
       attach_node(node, &)

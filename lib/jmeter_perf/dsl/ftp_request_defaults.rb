@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element FTPRequestDefaults
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#ftprequestdefaults
+    # @param [Hash] params Parameters for the FTPRequestDefaults element (default: `{}`).
+    # @yield block to attach to the FTPRequestDefaults element
+    # @return [JmeterPerf::FTPRequestDefaults], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def ftp_request_defaults(params = {}, &)
       node = JmeterPerf::FTPRequestDefaults.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element BSFSampler
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#bsfsampler
+    # @param [Hash] params Parameters for the BSFSampler element (default: `{}`).
+    # @yield block to attach to the BSFSampler element
+    # @return [JmeterPerf::BSFSampler], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def bsf_sampler(params = {}, &)
       node = JmeterPerf::BSFSampler.new(params)
       attach_node(node, &)
