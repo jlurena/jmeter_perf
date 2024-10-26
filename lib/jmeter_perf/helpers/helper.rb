@@ -1,5 +1,7 @@
 module JmeterPerf
   module Helper
+    private
+
     def update(params)
       params.delete(:name)
       enabled_disabled(params)

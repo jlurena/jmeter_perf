@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element ResponseTimeGraph
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#responsetimegraph
+    # @param [Hash] params Parameters for the ResponseTimeGraph element (default: `{}`).
+    # @yield block to attach to the ResponseTimeGraph element
+    # @return [JmeterPerf::ResponseTimeGraph], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def response_time_graph(params = {}, &)
       node = JmeterPerf::ResponseTimeGraph.new(params)
       attach_node(node, &)

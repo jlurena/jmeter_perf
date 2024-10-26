@@ -1,12 +1,14 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "#extract" do
     context "json" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           extract json: ".test.path", name: "my_json"
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor").first }

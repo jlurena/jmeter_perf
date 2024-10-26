@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JSONPathPostprocessor
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jsonpathpostprocessor
+    # @param [Hash] params Parameters for the JSONPathPostprocessor element (default: `{}`).
+    # @yield block to attach to the JSONPathPostprocessor element
+    # @return [JmeterPerf::JSONPathPostprocessor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def json_path_postprocessor(params = {}, &)
       node = JmeterPerf::JSONPathPostprocessor.new(params)
       attach_node(node, &)

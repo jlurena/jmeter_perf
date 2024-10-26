@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element BeanShellSampler
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#beanshellsampler
+    # @param [Hash] params Parameters for the BeanShellSampler element (default: `{}`).
+    # @yield block to attach to the BeanShellSampler element
+    # @return [JmeterPerf::BeanShellSampler], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def bean_shell_sampler(params = {}, &)
       node = JmeterPerf::BeanShellSampler.new(params)
       attach_node(node, &)

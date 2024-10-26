@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element TransactionController
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#transactioncontroller
+    # @param [Hash] params Parameters for the TransactionController element (default: `{}`).
+    # @yield block to attach to the TransactionController element
+    # @return [JmeterPerf::TransactionController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def transaction_controller(params = {}, &)
       node = JmeterPerf::TransactionController.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JSR223Listener
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jsr223listener
+    # @param [Hash] params Parameters for the JSR223Listener element (default: `{}`).
+    # @yield block to attach to the JSR223Listener element
+    # @return [JmeterPerf::JSR223Listener], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jsr223_listener(params = {}, &)
       node = JmeterPerf::JSR223Listener.new(params)
       attach_node(node, &)

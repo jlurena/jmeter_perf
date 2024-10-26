@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element ThreadGroup
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#threadgroup
+    # @param [Hash] params Parameters for the ThreadGroup element (default: `{}`).
+    # @yield block to attach to the ThreadGroup element
+    # @return [JmeterPerf::ThreadGroup], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def thread_group(params = {}, &)
       node = JmeterPerf::ThreadGroup.new(params)
       attach_node(node, &)

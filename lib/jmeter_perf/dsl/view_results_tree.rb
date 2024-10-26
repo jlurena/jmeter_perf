@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element ViewResultsTree
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#viewresultstree
+    # @param [Hash] params Parameters for the ViewResultsTree element (default: `{}`).
+    # @yield block to attach to the ViewResultsTree element
+    # @return [JmeterPerf::ViewResultsTree], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def view_results_tree(params = {}, &)
       node = JmeterPerf::ViewResultsTree.new(params)
       attach_node(node, &)

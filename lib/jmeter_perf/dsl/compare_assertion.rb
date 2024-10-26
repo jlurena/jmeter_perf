@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element CompareAssertion
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#compareassertion
+    # @param [Hash] params Parameters for the CompareAssertion element (default: `{}`).
+    # @yield block to attach to the CompareAssertion element
+    # @return [JmeterPerf::CompareAssertion], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def compare_assertion(params = {}, &)
       node = JmeterPerf::CompareAssertion.new(params)
       attach_node(node, &)

@@ -1,9 +1,11 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "http_request_defaults" do
     context "standard scope" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           defaults domain: "example.com",
             protocol: "https",
@@ -13,7 +15,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
             urls_must_match: "http.+?example.com",
             proxy_host: "proxy",
             proxy_port: 8080
-        end.to_doc
+        end
       end
 
       let(:config_fragment) { doc.search("//ConfigTestElement").first }

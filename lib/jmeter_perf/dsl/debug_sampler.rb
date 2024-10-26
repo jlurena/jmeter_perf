@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element DebugSampler
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#debugsampler
+    # @param [Hash] params Parameters for the DebugSampler element (default: `{}`).
+    # @yield block to attach to the DebugSampler element
+    # @return [JmeterPerf::DebugSampler], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def debug_sampler(params = {}, &)
       node = JmeterPerf::DebugSampler.new(params)
       attach_node(node, &)

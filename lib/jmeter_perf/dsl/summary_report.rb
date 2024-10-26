@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element SummaryReport
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#summaryreport
+    # @param [Hash] params Parameters for the SummaryReport element (default: `{}`).
+    # @yield block to attach to the SummaryReport element
+    # @return [JmeterPerf::SummaryReport], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def summary_report(params = {}, &)
       node = JmeterPerf::SummaryReport.new(params)
       attach_node(node, &)

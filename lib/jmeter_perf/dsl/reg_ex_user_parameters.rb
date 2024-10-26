@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element RegExUserParameters
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#regexuserparameters
+    # @param [Hash] params Parameters for the RegExUserParameters element (default: `{}`).
+    # @yield block to attach to the RegExUserParameters element
+    # @return [JmeterPerf::RegExUserParameters], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def reg_ex_user_parameters(params = {}, &)
       node = JmeterPerf::RegExUserParameters.new(params)
       attach_node(node, &)

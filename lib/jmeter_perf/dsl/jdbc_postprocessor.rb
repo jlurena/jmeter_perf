@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JDBCPostprocessor
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jdbcpostprocessor
+    # @param [Hash] params Parameters for the JDBCPostprocessor element (default: `{}`).
+    # @yield block to attach to the JDBCPostprocessor element
+    # @return [JmeterPerf::JDBCPostprocessor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jdbc_postprocessor(params = {}, &)
       node = JmeterPerf::JDBCPostprocessor.new(params)
       attach_node(node, &)

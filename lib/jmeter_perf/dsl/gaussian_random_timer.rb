@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element GaussianRandomTimer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#gaussianrandomtimer
+    # @param [Hash] params Parameters for the GaussianRandomTimer element (default: `{}`).
+    # @yield block to attach to the GaussianRandomTimer element
+    # @return [JmeterPerf::GaussianRandomTimer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def gaussian_random_timer(params = {}, &)
       node = JmeterPerf::GaussianRandomTimer.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element AggregateGraph
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#aggregategraph
+    # @param [Hash] params Parameters for the AggregateGraph element (default: `{}`).
+    # @yield block to attach to the AggregateGraph element
+    # @return [JmeterPerf::AggregateGraph], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def aggregate_graph(params = {}, &)
       node = JmeterPerf::AggregateGraph.new(params)
       attach_node(node, &)

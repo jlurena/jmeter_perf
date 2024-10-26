@@ -4,7 +4,7 @@ require "fileutils"
 require "pry-byebug"
 
 RSpec.describe DSLGenerator do
-  let(:lib_dir) { Pathname("lib_dir") }
+  let(:lib_dir) { Pathname("tmp") }
   let(:gem_dir) { lib_dir.join("gem_dir") }
   let(:dsl_dir) { gem_dir.join("dsl") }
   let(:specifications_dir) { lib_dir.join("specifications") }
@@ -50,6 +50,11 @@ RSpec.describe DSLGenerator do
       expected_dsl_content = <<~RUBY
         module JmeterPerf
           class DSL
+            # DSL method synonymous with the JMeter Element SomeTest
+            # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#sometest
+            # @param [Hash] params Parameters for the SomeTest element (default: `{}`).
+            # @yield block to attach to the SomeTest element
+            # @return [JmeterPerf::SomeTest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
             def some_test(params = {}, &)
               node = JmeterPerf::SomeTest.new(params)
               attach_node(node, &)

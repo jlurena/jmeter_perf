@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element Counter
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#counter
+    # @param [Hash] params Parameters for the Counter element (default: `{}`).
+    # @yield block to attach to the Counter element
+    # @return [JmeterPerf::Counter], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def counter(params = {}, &)
       node = JmeterPerf::Counter.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element MailerVisualizer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#mailervisualizer
+    # @param [Hash] params Parameters for the MailerVisualizer element (default: `{}`).
+    # @yield block to attach to the MailerVisualizer element
+    # @return [JmeterPerf::MailerVisualizer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def mailer_visualizer(params = {}, &)
       node = JmeterPerf::MailerVisualizer.new(params)
       attach_node(node, &)

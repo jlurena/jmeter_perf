@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JSR223Assertion
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jsr223assertion
+    # @param [Hash] params Parameters for the JSR223Assertion element (default: `{}`).
+    # @yield block to attach to the JSR223Assertion element
+    # @return [JmeterPerf::JSR223Assertion], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jsr223_assertion(params = {}, &)
       node = JmeterPerf::JSR223Assertion.new(params)
       attach_node(node, &)

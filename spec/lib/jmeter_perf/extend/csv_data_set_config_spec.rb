@@ -1,14 +1,16 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "#csv_data_set_config" do
-    let(:doc) do
+    let(:test_plan) do
       JmeterPerf.test do
         csv_data_set_config delimiter: "|",
           filename: "test.csv",
           ignoreFirstLine: true,
           variableNames: "test1,test2"
-      end.to_doc
+      end
     end
 
     let(:csv_data_set) { doc.search("//CSVDataSet") }

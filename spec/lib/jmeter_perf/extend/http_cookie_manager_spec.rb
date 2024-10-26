@@ -4,12 +4,14 @@ require "pry-byebug"
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "#http_cookie_manager" do
     context "clear_each_iteration option" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           cookies clear_each_iteration: true
-        end.to_doc
+        end
       end
 
       let(:cookies_fragment) { doc.search("//CookieManager") }
@@ -21,10 +23,10 @@ RSpec.describe JmeterPerf::ExtendedDSL do
 
     context "user_defined_cookie option" do
       context "when the user_defined_cookie option is empty" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             cookies
-          end.to_doc
+          end
         end
 
         let(:cookies_fragment) { doc.search("//CookieManager") }
@@ -45,7 +47,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
         let(:elements) { cookies_fragment.search("..//collectionProp[@name='CookieManager.cookies']").children }
 
         context "with all the cookie attributes provided" do
-          let(:doc) do
+          let(:test_plan) do
             JmeterPerf.test do
               cookies user_defined_cookies: [
                 {
@@ -56,7 +58,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
                   secure: cookie_secure
                 }
               ]
-            end.to_doc
+            end
           end
 
           it "should add an element to the cookie manager collection" do
@@ -105,7 +107,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
         end
 
         context "without optional cookie attributes provided" do
-          let(:doc) do
+          let(:test_plan) do
             JmeterPerf.test do
               cookies user_defined_cookies: [
                 {
@@ -113,7 +115,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
                   value: cookie_value
                 }
               ]
-            end.to_doc
+            end
           end
 
           it "should add a default Cookie.secure boolProp to the element" do
@@ -141,7 +143,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
         end
 
         context "when multiple cookies are set" do
-          let(:doc) do
+          let(:test_plan) do
             JmeterPerf.test do
               cookies user_defined_cookies: [
                 {
@@ -159,7 +161,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
                   secure: cookie_secure
                 }
               ]
-            end.to_doc
+            end
           end
 
           it "should add multiple elements to the cookie manager collection" do

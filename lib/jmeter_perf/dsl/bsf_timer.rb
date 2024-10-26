@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element BSFTimer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#bsftimer
+    # @param [Hash] params Parameters for the BSFTimer element (default: `{}`).
+    # @yield block to attach to the BSFTimer element
+    # @return [JmeterPerf::BSFTimer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def bsf_timer(params = {}, &)
       node = JmeterPerf::BSFTimer.new(params)
       attach_node(node, &)

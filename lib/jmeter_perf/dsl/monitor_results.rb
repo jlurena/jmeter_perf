@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element MonitorResults
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#monitorresults
+    # @param [Hash] params Parameters for the MonitorResults element (default: `{}`).
+    # @yield block to attach to the MonitorResults element
+    # @return [JmeterPerf::MonitorResults], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def monitor_results(params = {}, &)
       node = JmeterPerf::MonitorResults.new(params)
       attach_node(node, &)

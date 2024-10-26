@@ -1,9 +1,11 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "module_controllers" do
     describe "#module_controller" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test name: "tests" do
           threads 1, name: "threads" do
             simple_controller name: "controller_to_call"
@@ -16,7 +18,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
               "controller_to_call"
             ]
           end
-        end.to_doc
+        end
       end
 
       let(:simple_controller) { doc.search("//GenericController").first }
@@ -32,7 +34,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "with test fragment" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             test_fragment name: "some_test_fragment", enabled: "false" do
               get name: "Home Page", url: "http://google.com"
@@ -41,7 +43,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
             threads count: 1 do
               module_controller test_fragment: "WorkBench/TestPlan/some_test_fragment"
             end
-          end.to_doc
+          end
         end
 
         let(:simple_controller) { doc.search("//GenericController").first }

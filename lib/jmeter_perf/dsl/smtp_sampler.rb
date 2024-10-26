@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element SMTPSampler
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#smtpsampler
+    # @param [Hash] params Parameters for the SMTPSampler element (default: `{}`).
+    # @yield block to attach to the SMTPSampler element
+    # @return [JmeterPerf::SMTPSampler], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def smtp_sampler(params = {}, &)
       node = JmeterPerf::SMTPSampler.new(params)
       attach_node(node, &)

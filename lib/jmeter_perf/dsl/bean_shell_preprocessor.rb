@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element BeanShellPreprocessor
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#beanshellpreprocessor
+    # @param [Hash] params Parameters for the BeanShellPreprocessor element (default: `{}`).
+    # @yield block to attach to the BeanShellPreprocessor element
+    # @return [JmeterPerf::BeanShellPreprocessor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def bean_shell_preprocessor(params = {}, &)
       node = JmeterPerf::BeanShellPreprocessor.new(params)
       attach_node(node, &)

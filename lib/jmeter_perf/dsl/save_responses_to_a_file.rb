@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element SaveResponsesToAFile
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#saveresponsestoafile
+    # @param [Hash] params Parameters for the SaveResponsesToAFile element (default: `{}`).
+    # @yield block to attach to the SaveResponsesToAFile element
+    # @return [JmeterPerf::SaveResponsesToAFile], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def save_responses_to_a_file(params = {}, &)
       node = JmeterPerf::SaveResponsesToAFile.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element SynchronizingTimer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#synchronizingtimer
+    # @param [Hash] params Parameters for the SynchronizingTimer element (default: `{}`).
+    # @yield block to attach to the SynchronizingTimer element
+    # @return [JmeterPerf::SynchronizingTimer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def synchronizing_timer(params = {}, &)
       node = JmeterPerf::SynchronizingTimer.new(params)
       attach_node(node, &)

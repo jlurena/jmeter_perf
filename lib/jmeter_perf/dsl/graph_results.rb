@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element GraphResults
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#graphresults
+    # @param [Hash] params Parameters for the GraphResults element (default: `{}`).
+    # @yield block to attach to the GraphResults element
+    # @return [JmeterPerf::GraphResults], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def graph_results(params = {}, &)
       node = JmeterPerf::GraphResults.new(params)
       attach_node(node, &)

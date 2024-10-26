@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element ConstantThroughputTimer
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#constantthroughputtimer
+    # @param [Hash] params Parameters for the ConstantThroughputTimer element (default: `{}`).
+    # @yield block to attach to the ConstantThroughputTimer element
+    # @return [JmeterPerf::ConstantThroughputTimer], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def constant_throughput_timer(params = {}, &)
       node = JmeterPerf::ConstantThroughputTimer.new(params)
       attach_node(node, &)

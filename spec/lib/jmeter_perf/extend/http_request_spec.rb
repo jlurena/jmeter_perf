@@ -2,14 +2,16 @@ require "spec_helper"
 require "pry-byebug"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "http_request" do
     context "#get" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads count: 1 do
             get name: "Home Page", url: "https://example.com/"
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -35,12 +37,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "with options" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             threads count: 1 do
               get name: "Home Page", url: "https://example.com/", follow_redirects: false, use_keepalive: false
             end
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -56,12 +58,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     context "#visit" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads count: 1 do
             visit name: "Home Page", url: "https://example.com/"
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -71,12 +73,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "visit variations" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             threads do
               visit url: "/home?location=melbourne&location=sydney", always_encode: true
             end
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -114,12 +116,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
         end
 
         context "with query parameters" do
-          let(:doc) do
+          let(:test_plan) do
             JmeterPerf.test do
               threads do
                 visit "/home?location=melbourne", always_encode: true
               end
-            end.to_doc
+            end
           end
 
           let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -130,12 +132,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
         end
 
         context "with https" do
-          let(:doc) do
+          let(:test_plan) do
             JmeterPerf.test do
               threads do
                 visit url: "https://example.com"
               end
-            end.to_doc
+            end
           end
 
           let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -148,12 +150,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#post" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads count: 1 do
             post name: "Home Page", url: "https://example.com/"
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -163,14 +165,14 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "post raw_path" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             threads do
               transaction name: "TC_02" do
                 post url: "/home?location=melbourne", raw_path: true
               end
             end
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -181,12 +183,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "post raw body containing xml entities" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             threads do
               post url: "http://example.com", raw_body: 'username=my_name&password=my_password&email="my name <test@example.com>"'
             end
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -198,12 +200,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#submit" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads count: 1 do
             submit name: "Home Page", url: "https://example.com/"
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -213,12 +215,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "submit variations" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             threads do
               submit url: "/", fill_in: {username: "tim", password: "password"}
             end
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -233,7 +235,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
       end
 
       context "submit_with_files" do
-        let(:doc) do
+        let(:test_plan) do
           JmeterPerf.test do
             threads do
               transaction name: "TC_03", parent: true, include_timers: true do
@@ -242,7 +244,7 @@ RSpec.describe JmeterPerf::ExtendedDSL do
                     {path: "/tmp/bar", paramname: "otherfileup"}]
               end
             end
-          end.to_doc
+          end
         end
 
         let(:fragment) { doc.search("//HTTPSamplerProxy/elementProp[@name='HTTPsampler.Files']").first }
@@ -258,12 +260,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#patch" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads count: 1 do
             patch name: "Home Page", url: "https://example.com/"
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -274,12 +276,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#head" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads count: 1 do
             head name: "Home Page", url: "https://example.com/"
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HTTPSamplerProxy").first }
@@ -290,12 +292,12 @@ RSpec.describe JmeterPerf::ExtendedDSL do
     end
 
     describe "#put" do
-      let(:doc) do
+      let(:test_plan) do
         JmeterPerf.test do
           threads count: 1 do
             put name: "Home Page", url: "https://example.com/"
           end
-        end.to_doc
+        end
       end
 
       let(:fragment) { doc.search("//HTTPSamplerProxy").first }

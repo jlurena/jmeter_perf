@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element GenerateSummaryResults
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#generatesummaryresults
+    # @param [Hash] params Parameters for the GenerateSummaryResults element (default: `{}`).
+    # @yield block to attach to the GenerateSummaryResults element
+    # @return [JmeterPerf::GenerateSummaryResults], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def generate_summary_results(params = {}, &)
       node = JmeterPerf::GenerateSummaryResults.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element AJP13Sampler
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#ajp13sampler
+    # @param [Hash] params Parameters for the AJP13Sampler element (default: `{}`).
+    # @yield block to attach to the AJP13Sampler element
+    # @return [JmeterPerf::AJP13Sampler], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def ajp13_sampler(params = {}, &)
       node = JmeterPerf::AJP13Sampler.new(params)
       attach_node(node, &)

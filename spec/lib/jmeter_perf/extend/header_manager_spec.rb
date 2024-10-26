@@ -1,11 +1,13 @@
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
+  include_context "test plan doc"
+
   describe "#header_manager" do
-    let(:doc) do
+    let(:test_plan) do
       JmeterPerf.test do
         header name: "Accept", value: "*"
-      end.to_doc
+      end
     end
 
     let(:fragment) { doc.search("//HeaderManager").first }
@@ -17,10 +19,10 @@ RSpec.describe JmeterPerf::ExtendedDSL do
   end
 
   describe "header manager multiple values" do
-    let(:doc) do
+    let(:test_plan) do
       JmeterPerf.test do
         header [{name: "Accept", value: "1"}, {name: "Accept", value: "2"}]
-      end.to_doc
+      end
     end
 
     let(:fragment) { doc.search("//HeaderManager") }

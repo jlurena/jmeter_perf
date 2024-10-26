@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element LDAPExtendedRequest
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#ldapextendedrequest
+    # @param [Hash] params Parameters for the LDAPExtendedRequest element (default: `{}`).
+    # @yield block to attach to the LDAPExtendedRequest element
+    # @return [JmeterPerf::LDAPExtendedRequest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def ldap_extended_request(params = {}, &)
       node = JmeterPerf::LDAPExtendedRequest.new(params)
       attach_node(node, &)

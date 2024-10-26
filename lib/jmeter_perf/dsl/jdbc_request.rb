@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JDBCRequest
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jdbcrequest
+    # @param [Hash] params Parameters for the JDBCRequest element (default: `{}`).
+    # @yield block to attach to the JDBCRequest element
+    # @return [JmeterPerf::JDBCRequest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jdbc_request(params = {}, &)
       node = JmeterPerf::JDBCRequest.new(params)
       attach_node(node, &)

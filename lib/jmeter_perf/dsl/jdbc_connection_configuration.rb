@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element JDBCConnectionConfiguration
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jdbcconnectionconfiguration
+    # @param [Hash] params Parameters for the JDBCConnectionConfiguration element (default: `{}`).
+    # @yield block to attach to the JDBCConnectionConfiguration element
+    # @return [JmeterPerf::JDBCConnectionConfiguration], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def jdbc_connection_configuration(params = {}, &)
       node = JmeterPerf::JDBCConnectionConfiguration.new(params)
       attach_node(node, &)

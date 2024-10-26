@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element BSFAssertion
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#bsfassertion
+    # @param [Hash] params Parameters for the BSFAssertion element (default: `{}`).
+    # @yield block to attach to the BSFAssertion element
+    # @return [JmeterPerf::BSFAssertion], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def bsf_assertion(params = {}, &)
       node = JmeterPerf::BSFAssertion.new(params)
       attach_node(node, &)

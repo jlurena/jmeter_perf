@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element RegularExpressionExtractor
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#regularexpressionextractor
+    # @param [Hash] params Parameters for the RegularExpressionExtractor element (default: `{}`).
+    # @yield block to attach to the RegularExpressionExtractor element
+    # @return [JmeterPerf::RegularExpressionExtractor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def regular_expression_extractor(params = {}, &)
       node = JmeterPerf::RegularExpressionExtractor.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element RecordingController
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#recordingcontroller
+    # @param [Hash] params Parameters for the RecordingController element (default: `{}`).
+    # @yield block to attach to the RecordingController element
+    # @return [JmeterPerf::RecordingController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def recording_controller(params = {}, &)
       node = JmeterPerf::RecordingController.new(params)
       attach_node(node, &)

@@ -1,5 +1,10 @@
 module JmeterPerf
   class DSL
+    # DSL method synonymous with the JMeter Element XPathExtractor
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#xpathextractor
+    # @param [Hash] params Parameters for the XPathExtractor element (default: `{}`).
+    # @yield block to attach to the XPathExtractor element
+    # @return [JmeterPerf::XPathExtractor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     def x_path_extractor(params = {}, &)
       node = JmeterPerf::XPathExtractor.new(params)
       attach_node(node, &)
