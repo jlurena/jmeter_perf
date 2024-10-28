@@ -4,13 +4,15 @@ module JmeterPerf
       JmeterPerf::JmsPointtopoint.new(params).tap do |node|
         params[:jndi_properties]&.each do |property_name, property_value|
           node.doc.xpath("//collectionProp").first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <elementProp name="#{property_name}" elementType="Argument">
-                <stringProp name="Argument.name">#{property_name}</stringProp>
-                <stringProp name="Argument.value">#{property_value}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <elementProp name="#{property_name}" elementType="Argument">
+                  <stringProp name="Argument.name">#{property_name}</stringProp>
+                  <stringProp name="Argument.value">#{property_value}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              EOS
+            )).children
           )
         end
 

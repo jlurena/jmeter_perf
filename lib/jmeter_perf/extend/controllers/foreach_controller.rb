@@ -5,18 +5,22 @@ module JmeterPerf
         if params[:start_index]
           params[:startIndex] = params[:start_index]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <stringProp name="ForeachController.startIndex"/>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <stringProp name="ForeachController.startIndex"/>
+              EOS
+            )).children
           )
         end
 
         if params[:end_index]
           params[:endIndex] = params[:end_index]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <stringProp name="ForeachController.endIndex"/>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <stringProp name="ForeachController.endIndex"/>
+              EOS
+            )).children
           )
         end
       end

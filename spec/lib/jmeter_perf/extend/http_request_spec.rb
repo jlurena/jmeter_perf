@@ -1,5 +1,4 @@
 require "spec_helper"
-require "pry-byebug"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
   include_context "test plan doc"

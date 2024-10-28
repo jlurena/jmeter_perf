@@ -1,7 +1,6 @@
 require "nokogiri"
 require "pathname"
 require "fileutils"
-require "pry-byebug"
 
 RSpec.describe DSLGenerator do
   let(:lib_dir) { Pathname("tmp") }
@@ -35,7 +34,7 @@ RSpec.describe DSLGenerator do
   end
 
   describe "#generate" do
-    subject(:dsl_generator) { described_class.new(lib_dir:, gem_dir:, dsl_dir:, idl_xml_path:) }
+    subject(:dsl_generator) { described_class.new(dsl_dir:, idl_xml_path:) }
 
     it "parses the idl.xml file" do
       expect { dsl_generator.generate }.not_to raise_error
@@ -51,27 +50,29 @@ RSpec.describe DSLGenerator do
         module JmeterPerf
           class DSL
             # DSL method synonymous with the JMeter Element SomeTest
-            # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#sometest
             # @param [Hash] params Parameters for the SomeTest element (default: `{}`).
             # @yield block to attach to the SomeTest element
             # @return [JmeterPerf::SomeTest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
+            # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#sometest
             def some_test(params = {}, &)
-              node = JmeterPerf::SomeTest.new(params)
+              node = SomeTest.new(params)
               attach_node(node, &)
             end
-          end
 
-          class SomeTest
-            attr_accessor :doc
-            include Helper
+            class SomeTest
+              attr_accessor :doc
+              include JmeterPerf::Helpers::XmlDocumentUpdater
 
-            def initialize(params = {})
-              testname = params.is_a?(Array) ? "SomeTest" : (params[:name] || "SomeTest")
-              @doc = Nokogiri::XML(<<~EOS.strip_heredoc)
-        #{xml_element.to_xml.gsub(/testname=".+?"/, 'testname="#{testname}"').gsub(/^/, "        ")}
-              EOS
-              update params
-              update_at_xpath params if params.is_a?(Hash) && params[:update_at_xpath]
+              def initialize(params = {})
+                testname = params.is_a?(Array) ? "SomeTest" : (params[:name] || "SomeTest")
+                @doc = Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+                  <<~EOS
+            #{xml_element.to_xml.gsub(/testname=".+?"/, 'testname="#{testname}"').gsub(/^/, "        ")}
+                  EOS
+                ))
+                update params
+                update_at_xpath params if params.is_a?(Hash) && params[:update_at_xpath]
+              end
             end
           end
         end
@@ -89,7 +90,7 @@ RSpec.describe DSLGenerator do
       MARKDOWN
         .chomp
 
-      expect(File).to receive(:write).with(dsl_md_file_path, expected_md_content)
+      expect(File).to receive(:write).with("DSL.md", expected_md_content)
       dsl_generator.generate
     end
 

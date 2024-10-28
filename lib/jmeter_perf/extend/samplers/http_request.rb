@@ -30,20 +30,24 @@ module JmeterPerf
     end
 
     def http_request_node(params)
-      JmeterPerf::HTTPRequest.new(params).tap do |node|
+      JmeterPerf::DSL::HTTPRequest.new(params).tap do |node|
         if params[:implementation]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <stringProp name="HTTPSampler.implementation">#{params[:implementation]}</stringProp>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <stringProp name="HTTPSampler.implementation">#{params[:implementation]}</stringProp>
+              EOS
+            )).children
           )
         end
 
         if params[:comments]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <stringProp name="TestPlan.comments">#{params[:comments]}</stringProp>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <stringProp name="TestPlan.comments">#{params[:comments]}</stringProp>
+              EOS
+            )).children
           )
         end
       end

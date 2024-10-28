@@ -5,7 +5,7 @@ module JmeterPerf
       params = {name: params}.merge(args.shift || {}) if params.is_a?(String)
       params[:parent] = params[:parent] || false
       params[:includeTimers] = params[:include_timers] || false
-      node = JmeterPerf::TransactionController.new(params)
+      node = JmeterPerf::DSL::TransactionController.new(params)
       attach_node(node, &)
     end
 

@@ -35,7 +35,7 @@ module JmeterPerf
     dsl = JmeterPerf::ExtendedDSL.new(params)
 
     block_context = eval("self", block.binding, __FILE__, __LINE__)
-    proxy_context = JmeterPerf::FallbackContextProxy.new(dsl, block_context)
+    proxy_context = JmeterPerf::Helpers::FallbackContextProxy.new(dsl, block_context)
     begin
       block_context.instance_variables.each do |ivar|
         proxy_context.instance_variable_set(ivar, block_context.instance_variable_get(ivar))
@@ -52,20 +52,22 @@ module JmeterPerf
   # DSL class for defining JMeter test plans.
   # Provides methods to generate, save, and run JMeter tests.
   class ExtendedDSL < DSL
-    include Parser
+    include JmeterPerf::Helpers::Parser
     attr_accessor :root
 
     # Initializes an ExtendedDSL object with the provided parameters.
     # @param [Hash] params Parameters for the test plan (default: `{}`).
     def initialize(params = {})
-      @root = Nokogiri::XML(<<-EOF.strip_heredoc)
-        <?xml version="1.0" encoding="UTF-8"?>
-        <jmeterTestPlan version="1.2" properties="3.1" jmeter="3.1" ruby-jmeter="3.0">
-        <hashTree>
-        </hashTree>
-        </jmeterTestPlan>
-      EOF
-      node = JmeterPerf::TestPlan.new(params)
+      @root = Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+        <<-EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <jmeterTestPlan version="1.2" properties="3.1" jmeter="3.1" ruby-jmeter="3.0">
+          <hashTree>
+          </hashTree>
+          </jmeterTestPlan>
+        EOF
+      ))
+      node = JmeterPerf::DSL::TestPlan.new(params)
       @current_node = @root.at_xpath("//jmeterTestPlan/hashTree")
       @current_node = attach_to_last(node)
     end

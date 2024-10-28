@@ -10,10 +10,9 @@ namespace :dsl do
     idl_xml_path = lib_dir.join("specifications/idl.xml")
 
     generator = DSLGenerator.new(
-      lib_dir: lib_dir,
-      gem_dir: gem_dir,
       dsl_dir: dsl_dir,
-      idl_xml_path: idl_xml_path
+      idl_xml_path: idl_xml_path,
+      document_dsl: false
     )
 
     generator.generate

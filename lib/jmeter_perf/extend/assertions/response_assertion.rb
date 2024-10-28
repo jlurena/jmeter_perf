@@ -10,15 +10,17 @@ module JmeterPerf
         node = JmeterPerf::Plugins::JsonPathAssertion.new(params)
       end
 
-      node ||= JmeterPerf::ResponseAssertion.new(params).tap do |node|
+      node ||= JmeterPerf::DSL::ResponseAssertion.new(params).tap do |node|
         if params[:variable]
           params["Scope.variable"] = params[:variable]
           node.doc.xpath("//stringProp[@name='Assertion.scope']").first.content = "variable"
 
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
               <stringProp name="Scope.variable">#{params[:variable]}</stringProp>
-            EOS
+              EOS
+            )).children
           )
         end
 

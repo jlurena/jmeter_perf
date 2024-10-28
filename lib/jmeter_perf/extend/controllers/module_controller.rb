@@ -1,7 +1,7 @@
 module JmeterPerf
   class ExtendedDSL < DSL
     def module_controller(params, &)
-      node = JmeterPerf::ModuleController.new(params)
+      node = JmeterPerf::DSL::ModuleController.new(params)
 
       if params[:test_fragment]
         params[:test_fragment].is_a?(String) &&
@@ -11,10 +11,13 @@ module JmeterPerf
       else
         []
       end.each_with_index do |node_name, index|
-        node.doc.at_xpath("//collectionProp") <<
-          Nokogiri::XML(<<-EOS.strip_heredoc).children
-            <stringProp name="node_#{index}">#{node_name}</stringProp>
-          EOS
+        node.doc.at_xpath("//collectionProp") << Nokogiri::XML(
+          JmeterPerf::Helpers::String.strip_heredoc(
+            <<-EOS
+              <stringProp name="node_#{index}">#{node_name}</stringProp>
+            EOS
+          )
+        ).children
       end
 
       attach_node(node, &)

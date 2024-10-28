@@ -3,7 +3,7 @@ module JmeterPerf
     def constant_throughput_timer(params, &)
       params[:value] ||= params[:throughput] || 0.0
 
-      node = JmeterPerf::ConstantThroughputTimer.new(params)
+      node = JmeterPerf::DSL::ConstantThroughputTimer.new(params)
       node.doc.xpath('//stringProp[@name="throughput"]').first.content = params[:value]
       attach_node(node, &)
     end

@@ -1,29 +1,31 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element ModuleController
-    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#modulecontroller
     # @param [Hash] params Parameters for the ModuleController element (default: `{}`).
     # @yield block to attach to the ModuleController element
     # @return [JmeterPerf::ModuleController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
+    # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#modulecontroller
     def module_controller(params = {}, &)
-      node = JmeterPerf::ModuleController.new(params)
+      node = ModuleController.new(params)
       attach_node(node, &)
     end
-  end
 
-  class ModuleController
-    attr_accessor :doc
-    include Helper
+    class ModuleController
+      attr_accessor :doc
+      include JmeterPerf::Helpers::XmlDocumentUpdater
 
-    def initialize(params = {})
-      testname = params.is_a?(Array) ? "ModuleController" : (params[:name] || "ModuleController")
-      @doc = Nokogiri::XML(<<~EOS.strip_heredoc)
-        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="#{testname}" enabled="true">
-          <collectionProp name="ModuleController.node_path"/>
-        </ModuleController>
-      EOS
-      update params
-      update_at_xpath params if params.is_a?(Hash) && params[:update_at_xpath]
+      def initialize(params = {})
+        testname = params.is_a?(Array) ? "ModuleController" : (params[:name] || "ModuleController")
+        @doc = Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+          <<~EOS
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="#{testname}" enabled="true">
+              <collectionProp name="ModuleController.node_path"/>
+            </ModuleController>
+          EOS
+        ))
+        update params
+        update_at_xpath params if params.is_a?(Hash) && params[:update_at_xpath]
+      end
     end
   end
 end

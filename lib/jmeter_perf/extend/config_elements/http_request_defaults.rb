@@ -5,36 +5,44 @@ module JmeterPerf
       params[:concurrentDwn] = true if params.key? :use_concurrent_pool
       params[:concurrentPool] = params[:use_concurrent_pool] if params.key? :use_concurrent_pool
 
-      node = JmeterPerf::HTTPRequestDefaults.new(params).tap do |node|
+      node = JmeterPerf::DSL::HTTPRequestDefaults.new(params).tap do |node|
         if params[:urls_must_match]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
               <stringProp name="HTTPSampler.embedded_url_re">#{params[:urls_must_match]}</stringProp>
-            EOS
+              EOS
+            )).children
           )
         end
 
         if params[:md5]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <boolProp name="HTTPSampler.md5">true</stringProp>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <boolProp name="HTTPSampler.md5">true</stringProp>
+              EOS
+            )).children
           )
         end
 
         if params[:proxy_host]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <stringProp name="HTTPSampler.proxyHost">#{params[:proxy_host]}</stringProp>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <stringProp name="HTTPSampler.proxyHost">#{params[:proxy_host]}</stringProp>
+              EOS
+            )).children
           )
         end
 
         if params[:proxy_port]
           node.doc.children.first.add_child(
-            Nokogiri::XML(<<-EOS.strip_heredoc).children
-              <stringProp name="HTTPSampler.proxyPort">#{params[:proxy_port]}</stringProp>
-            EOS
+            Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+              <<-EOS
+                <stringProp name="HTTPSampler.proxyPort">#{params[:proxy_port]}</stringProp>
+              EOS
+            )).children
           )
         end
       end

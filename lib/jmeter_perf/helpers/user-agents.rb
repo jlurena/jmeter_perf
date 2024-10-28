@@ -1,27 +1,42 @@
-module JmeterPerf
-  class UserAgent
-    def initialize(device)
-      @common_devices = {
-        iphone: "Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B179 Safari/7534.48.3",
-        ipod: "Mozilla/5.0 (iPod; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B176 Safari/7534.48.3",
-        ipad: "Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B176 Safari/7534.48.3",
-        safari_osx: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/536.25 (KHTML, like Gecko) Version/6.0 Safari/536.25",
-        safari_win: "Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/534.57.2 (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2",
-        ie7: "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
-        ie8: "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)",
-        ie9: "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
-        chrome_osx: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.46 Safari/536.5",
-        chrome_win: "Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.46 Safari/536.5",
-        ff_osx: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:11.0) Gecko/20100101 Firefox/11.0",
-        ff_win: "Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100101 Firefox/11.0",
-        opera_osx: "Opera/9.80 (Macintosh; Intel Mac OS X 10.7.4; U; en) Presto/2.10.229 Version/11.62",
-        opera_win: "Opera/9.80 (Windows NT 6.1; U; en) Presto/2.10.229 Version/11.62"
-      }
-      @device = device
-    end
+# This module provides a collection of common user-agent strings for various devices and browsers.
+# It allows retrieval of user-agent strings based on device type.
+module JmeterPerf::Helpers
+  module UserAgent
+    # A hash containing user-agent strings for common devices and browsers.
+    # @return [Hash<Symbol, String>] the user-agent strings for various devices and browsers.
+    COMMON_DEVICES = {
+      # User-agent string for iPhone
+      iphone: "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+      # User-agent string for iPod
+      ipod: "Mozilla/5.0 (iPod touch; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+      # User-agent string for iPad
+      ipad: "Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+      # User-agent string for Safari on macOS
+      safari_osx: "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15",
+      # User-agent string for Safari on Windows
+      safari_win: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188",
+      # User-agent string for Edge
+      edge: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188",
+      # User-agent string for Chrome on macOS
+      chrome_osx: "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+      # User-agent string for Chrome on Windows
+      chrome_win: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+      # User-agent string for Firefox on macOS
+      ff_osx: "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.0; rv:115.0) Gecko/20100101 Firefox/115.0",
+      # User-agent string for Firefox on Windows
+      ff_win: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0",
+      # User-agent string for Opera on macOS
+      opera_osx: "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/102.0.0.0",
+      # User-agent string for Opera on Windows
+      opera_win: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/102.0.0.0"
+    }
 
-    def string
-      @common_devices[@device] || @common_devices[:chrome_osx]
+    # Retrieves the user-agent string for the specified device.
+    #
+    # @param device [Symbol] the device type for which to retrieve the user-agent string.
+    # @return [String] the user-agent string for the specified device, or the default Chrome on macOS user-agent string if the device is not found.
+    def self.string(device)
+      COMMON_DEVICES[device] || COMMON_DEVICES[:chrome_osx]
     end
   end
 end

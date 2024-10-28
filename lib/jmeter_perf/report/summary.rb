@@ -7,6 +7,7 @@ module JmeterPerf
     # JMeter JTL files. It calculates metrics such as average response time, error percentage,
     # min/max response times, and percentiles, helping to understand the distribution of
     # response times across requests.
+    # @note This class uses a TDigest data structure to keep statistics "close enough". Accuracy is not guaranteed.
     class Summary
       # @return [String] the name of the summary, usually derived from the file path
       attr_reader :name
@@ -75,7 +76,7 @@ module JmeterPerf
       def initialize(file_path, name = nil)
         @name = name || file_path.to_s.tr("/", "_")
         @finished = false
-        @running_statistics_helper = JmeterPerf::RunningStatistisc.new
+        @running_statistics_helper = JmeterPerf::Helpers::RunningStatistisc.new
 
         @max = 0
         @min = 1_000_000

@@ -43,9 +43,10 @@ module JmeterPerf
       # Checks if the comparison passes based on Cohen's D and effect size.
       # @note If no Cohen's D limit is provided, the `effect_size` threshold is used.
       # @param cohens_d_limit [Float, nil] optional limit for Cohen's D (default: nil)
-      # @param effect_size [Symbol] the desired effect size threshold (default: :vsmall)
-      #   @see #EFFECT_SIZE_LIMITS for available effect size options
+      # @param effect_size [Symbol] the desired effect size threshold (default: :vsmall).
+      #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_LIMITS} for options.
       # @param direction [Symbol] the direction of comparison, e.g., :positive (default: :both)
+      #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_DIRECTION} for options.
       # @raise [ArgumentError] if the effect size or direction is invalid
       # @return [Boolean] true if comparison meets the criteria
       def pass?(cohens_d_limit = nil, effect_size = :vsmall, direction = :both)

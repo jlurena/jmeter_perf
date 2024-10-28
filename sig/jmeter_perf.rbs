@@ -2,7 +2,7 @@ module JmeterPerf
   def self.test: (Hash[Symbol, untyped] params = {}) { () -> void } -> ExtendedDSL
 
   class ExtendedDSL < DSL
-    include Parser
+    include JmeterPerf::Helper::Parser
     attr_accessor root: Nokogiri::XML::Document
 
     def initialize: (Hash[Symbol, untyped]) -> void

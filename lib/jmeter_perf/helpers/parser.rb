@@ -1,6 +1,6 @@
 require "uri"
 
-module JmeterPerf
+module JmeterPerf::Helpers
   module Parser
     private
 
@@ -49,18 +49,20 @@ module JmeterPerf
       params[:update_at_xpath] = params[:fill_in]
         .each_with_object(params[:update_at_xpath]) do |(name, values), memo|
           Array(values).each do |value|
-            memo << {
+            memo.push({
               xpath: "//collectionProp",
-              value: Nokogiri::XML(<<-EOF.strip_heredoc).children
-                <elementProp name="#{name}" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">#{params[:always_encode] ? "true" : false}</boolProp>
-                  <stringProp name="Argument.value">#{value}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  <stringProp name="Argument.name">#{name}</stringProp>
-                </elementProp>
-              EOF
-            }
+              value: Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+                <<-EOF
+                  <elementProp name="#{name}" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">#{params[:always_encode] ? "true" : false}</boolProp>
+                    <stringProp name="Argument.value">#{value}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    <stringProp name="Argument.name">#{name}</stringProp>
+                  </elementProp>
+                EOF
+              )).children
+            })
           end
         end
       params.delete(:fill_in)
@@ -68,23 +70,27 @@ module JmeterPerf
 
     def raw_body(params)
       params[:update_at_xpath] ||= []
-      params[:update_at_xpath] << {
+      params[:update_at_xpath].push({
         xpath: "//HTTPSamplerProxy",
-        value: Nokogiri::XML(<<-EOF.strip_heredoc).children
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-        EOF
-      }
+        value: Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+          <<-EOF
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          EOF
+        )).children
+      })
 
-      params[:update_at_xpath] << {
+      params[:update_at_xpath].push({
         xpath: "//collectionProp",
-        value: Nokogiri::XML(<<-EOF.strip_heredoc).children
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">#{params[:raw_body].encode(xml: :text)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        EOF
-      }
+        value: Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
+          <<-EOF
+            <elementProp name="" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">#{params[:raw_body].encode(xml: :text)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          EOF
+        )).children
+      })
       params.delete(:raw_body)
     end
 

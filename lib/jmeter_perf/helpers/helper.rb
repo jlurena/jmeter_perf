@@ -1,5 +1,5 @@
-module JmeterPerf
-  module Helper
+module JmeterPerf::Helpers
+  module XmlDocumentUpdater
     private
 
     def update(params)

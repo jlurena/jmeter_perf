@@ -10,7 +10,7 @@ module JmeterPerf
       params[:duration] ||= 60
       params[:continue_forever] ||= false
       params[:loops] = -1 if params[:continue_forever]
-      node = JmeterPerf::ThreadGroup.new(params)
+      node = JmeterPerf::DSL::ThreadGroup.new(params)
       attach_node(node, &)
     end
 

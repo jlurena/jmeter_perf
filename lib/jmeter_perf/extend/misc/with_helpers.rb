@@ -1,11 +1,11 @@
 module JmeterPerf
   class ExtendedDSL < DSL
     def with_user_agent(device)
-      http_header_manager name: "User-Agent", value: JmeterPerf::UserAgent.new(device).string
+      http_header_manager name: "User-Agent", value: JmeterPerf::Helpers::UserAgent.string(device)
     end
 
     def with_browser(device)
-      http_header_manager name: "User-Agent", value: JmeterPerf::UserAgent.new(device).string
+      http_header_manager name: "User-Agent", value: JmeterPerf::Helpers::UserAgent.string(device)
       http_header_manager [
         {name: "Accept-Encoding", value: "gzip,deflate,sdch"},
         {name: "Accept", value: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"}

@@ -62,16 +62,20 @@ module JmeterPerf
       node = JmeterPerf::Plugins::UltimateThreadGroup.new(params)
 
       (params.is_a?(Array) ? params : params[:threads]).each_with_index do |group, index|
-        node.doc.at_xpath("//collectionProp") <<
-          Nokogiri::XML(<<-EOS.strip_heredoc).children
-            <collectionProp name="index">
-              <stringProp name="#{group[:start_threads]}">#{group[:start_threads]}</stringProp>
-              <stringProp name="#{group[:initial_delay]}">#{group[:initial_delay]}</stringProp>
-              <stringProp name="#{group[:start_time]}">#{group[:start_time]}</stringProp>
-              <stringProp name="#{group[:hold_time]}">#{group[:hold_time]}</stringProp>
-              <stringProp name="#{group[:stop_time]}">#{group[:stop_time]}</stringProp>
-            </collectionProp>
-          EOS
+        node.doc.at_xpath("//collectionProp").<<
+        Nokogiri::XML(
+          JmeterPerf::Helpers::String.strip_heredoc(
+            <<-EOS
+              <collectionProp name="index">
+                <stringProp name="#{group[:start_threads]}">#{group[:start_threads]}</stringProp>
+                <stringProp name="#{group[:initial_delay]}">#{group[:initial_delay]}</stringProp>
+                <stringProp name="#{group[:start_time]}">#{group[:start_time]}</stringProp>
+                <stringProp name="#{group[:hold_time]}">#{group[:hold_time]}</stringProp>
+                <stringProp name="#{group[:stop_time]}">#{group[:stop_time]}</stringProp>
+              </collectionProp>
+            EOS
+          )
+        ).children
       end
 
       attach_node(node, &)

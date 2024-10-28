@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "pry-byebug"
 require "spec_helper"
 
 RSpec.describe JmeterPerf::ExtendedDSL do
