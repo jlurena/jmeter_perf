@@ -26,7 +26,10 @@ Gem::Specification.new do |spec|
     end
   end
   spec.metadata = {
-    "documentation_uri" => "https://rubydoc.info/gems/jmeter_perf/"
+    "changelog_uri" => "https://github.com/jlurena/jmeter_perf/blob/main/CHANGELOG.md",
+    "documentation_uri" => "https://rubydoc.info/gems/jmeter_perf/",
+    "source_code_uri" => "https://github.com/jlurena/jmeter_perf",
+    "wiki_uri" => "https://github.com/jlurena/jmeter_perf/wiki"
   }
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
