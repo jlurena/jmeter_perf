@@ -1,4 +1,5 @@
 require "csv"
+require "timeout"
 require_relative "../helpers/running_statistics"
 
 module JmeterPerf
@@ -43,6 +44,8 @@ module JmeterPerf
       attr_reader :total_requests
       # @return [Integer] the total number of bytes sent
       attr_reader :total_sent_bytes
+      # @return [Array<Integer>] the line numbers of where CSV errors were encountered
+      attr_reader :csv_error_lines
 
       alias_method :rpm, :requests_per_minute
       alias_method :std, :standard_deviation
@@ -69,6 +72,24 @@ module JmeterPerf
         Connect
       ]
 
+      CSV_HEADER_MAPPINGS = {
+        "Average Response Time" => :@avg,
+        "Error Percentage" => :@error_percentage,
+        "Max Response Time" => :@max,
+        "Min Response Time" => :@min,
+        "10th Percentile" => :@p10,
+        "Median (50th Percentile)" => :@p50,
+        "95th Percentile" => :@p95,
+        "Requests Per Minute" => :@requests_per_minute,
+        "Standard Deviation" => :@standard_deviation,
+        "Total Bytes" => :@total_bytes,
+        "Total Elapsed Time" => :@total_elapsed_time,
+        "Total Errors" => :@total_errors,
+        "Total Latency" => :@total_latency,
+        "Total Requests" => :@total_requests,
+        "Total Sent Bytes" => :@total_sent_bytes
+      }
+
       # Initializes a new Summary instance for analyzing performance data.
       #
       # @param file_path [String] the file path of the JTL file to analyze
@@ -87,6 +108,7 @@ module JmeterPerf
         @total_latency = 0
         @total_requests = 0
         @total_sent_bytes = 0
+        @csv_error_lines = []
 
         @file_path = file_path
       end
@@ -96,24 +118,58 @@ module JmeterPerf
       # @return [void]
       def finish!
         @finished = true
+        @processing_jtl_thread.join if @processing_jtl_thread&.alive?
+      end
+
+      # Reads the generated CSV report and sets all appropriate attributes.
+      #
+      # @param csv_file [String] the file path of the CSV report to read
+      # @return [void]
+      def read_csv_report(csv_file)
+        CSV.foreach(csv_file, headers: true) do |row|
+          metric = row["Metric"]
+          value = row["Value"]
+
+          if CSV_HEADER_MAPPINGS.key?(metric)
+            instance_variable_set(CSV_HEADER_MAPPINGS[metric], value.to_f)
+          elsif metric.start_with?("Response Code")
+            code = metric.split.last
+            @response_codes[code] = value.to_i
+          elsif metric == "CSV Errors"
+            @csv_error_lines = value.split(":")
+          end
+        end
+      end
+
+      def generate_csv_report(output_file)
+        CSV.open(output_file, "wb") do |csv|
+          csv << ["Metric", "Value"]
+          CSV_HEADER_MAPPINGS.each do |metric, value|
+            csv << [metric, instance_variable_get(value)]
+          end
+          @response_codes.each do |code, count|
+            csv << ["Response Code #{code}", count]
+          end
+
+          csv << ["CSV Errors", @csv_error_lines.join(":")]
+        end
       end
 
       # Starts streaming and processing JTL file content asynchronously.
       #
       # @return [Thread] a thread that handles the asynchronous file streaming and parsing
       def stream_jtl_async
-        Thread.new do
+        @processing_jtl_thread = Thread.new do
           sleep 0.1 until File.exist?(@file_path) # Wait for the file to be created
 
           File.open(@file_path, "r") do |file|
             file.seek(0, IO::SEEK_END)
-            until file.eof? && @finished
+            until @finished && file.eof?
               line = file.gets
-              if line
-                parse_csv_row(line)
-              else
-                sleep 0.1 # Small delay to avoid busy waiting
-              end
+              next unless line # Skip if no line was read
+
+              # Process only if the line is complete (ends with a newline)
+              read_until_complete_line(file, line)
             end
           end
         end
@@ -126,23 +182,34 @@ module JmeterPerf
         @p10, @p50, @p95 = @running_statistics_helper.get_percentiles(0.1, 0.5, 0.95)
         @error_percentage = (@total_errors.to_f / @total_requests) * 100
         @avg = @running_statistics_helper.avg
-        @requests_per_minute = @total_elapsed_time.zero? ? 0 : @total_requests / (@total_elapsed_time / 1000)
+        @requests_per_minute = @total_elapsed_time.zero? ? 0 : (@total_requests / (@total_elapsed_time / 1000)) * 60
         @standard_deviation = @running_statistics_helper.std
       end
 
       private
 
-      # Parses a single CSV row from the JTL file and updates running statistics.
-      #
-      # @param csv_row [String] a single line from the CSV-formatted JTL file
-      # @return [void]
-      def parse_csv_row(csv_row)
-        CSV.parse(csv_row, headers: JTL_HEADER).each do |row|
+      def read_until_complete_line(file, line, max_wait_seconds = 5)
+        return if file.lineno == 1 # Skip the header row
+        Timeout.timeout(max_wait_seconds) do
+          until line.end_with?("\n")
+            sleep 0.1
+            line += file.gets.to_s
+          end
+        end
+        parse_csv_row(line)
+      rescue Timeout::Error
+        puts "Timeout waiting for line to complete: #{line}"
+        raise
+      rescue CSV::MalformedCSVError
+        @csv_error_lines << file.lineno
+      end
+
+      def parse_csv_row(line)
+        CSV.parse(line, headers: JTL_HEADER, liberal_parsing: true).each do |row|
           line_item = row.to_hash
           elapsed = line_item.fetch(:elapsed).to_i
 
           @running_statistics_helper.add_number(elapsed)
-
           @total_requests += 1
           @total_elapsed_time += elapsed
           @response_codes[line_item.fetch(:responseCode)] += 1

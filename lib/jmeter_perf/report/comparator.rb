@@ -36,7 +36,7 @@ module JmeterPerf
       def initialize(base_report, test_report, name = nil)
         @base_report = base_report
         @test_report = test_report
-        @name = name
+        @name = name&.gsub(/\s+/, "_")
         compare_reports!
       end
 
@@ -49,7 +49,7 @@ module JmeterPerf
       #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_DIRECTION} for options.
       # @raise [ArgumentError] if the effect size or direction is invalid
       # @return [Boolean] true if comparison meets the criteria
-      def pass?(cohens_d_limit = nil, effect_size = :vsmall, direction = :both)
+      def pass?(cohens_d_limit: nil, effect_size: :vsmall, direction: :both)
         limit = cohens_d_limit || EFFECT_SIZE_LIMITS[effect_size]
         raise ArgumentError, "Invalid effect size: #{effect_size}" unless cohens_d_limit
 

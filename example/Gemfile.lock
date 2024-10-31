@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    jmeter_perf (0.0.7)
+    jmeter_perf (1.0.0)
       nokogiri (~> 1.16, >= 1.16.7)
       tdigest (~> 0.2.1)
 
