@@ -7,7 +7,7 @@ namespace :jmeter_perf do
     dsl_dir = Pathname(args[:dsl_dir]).expand_path
     idl_xml_path = Pathname(args[:idl_xml_path]).expand_path
 
-    generator = DSLGenerator.new(
+    generator = JmeterPerf::Helpers::DSLGenerator.new(
       dsl_dir: dsl_dir,
       idl_xml_path: idl_xml_path
     )

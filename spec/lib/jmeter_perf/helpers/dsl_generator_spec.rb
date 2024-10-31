@@ -2,7 +2,7 @@ require "nokogiri"
 require "pathname"
 require "fileutils"
 
-RSpec.describe DSLGenerator do
+RSpec.describe JmeterPerf::Helpers::DSLGenerator do
   let(:lib_dir) { Pathname("tmp") }
   let(:gem_dir) { lib_dir.join("gem_dir") }
   let(:dsl_dir) { gem_dir.join("dsl") }
