@@ -201,7 +201,7 @@ module JmeterPerf
                 (index == 0) ? "Base Metric" : "Test Metric",
                 report.total_requests,
                 report.total_elapsed_time,
-                sprint("%.2f", report.rpm),
+                sprintf("%.2f", report.rpm),
                 report.total_errors,
                 sprintf("%.2f", report.error_percentage),
                 report.min,
