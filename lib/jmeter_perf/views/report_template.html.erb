@@ -68,7 +68,7 @@
   </div>
   <table>
     <tr class="header-row">
-      <% ['Label', 'Total Requests', 'Errors', 'Error %', 'Min', 'Max', 'Avg', 'SD', 'P10', 'P50', 'P95'].each do |header| %>
+      <% ['Label', 'Total Requests', 'Total Elapsed Time', 'RPM', 'Errors', 'Error %', 'Min', 'Max', 'Avg', 'SD', 'P10', 'P50', 'P95'].each do |header| %>
         <td class="tooltip"><%= header %>
           <span class="tooltiptext"><%= "Description for #{header}" %></span>
         </td>
@@ -78,6 +78,8 @@
       <tr>
         <td><%= index == 0 ? "Base Metric" : "Test Metric" %></td>
         <td><%= report.total_requests %></td>
+        <td><%= report.total_elapsed_time %></td>
+        <td><%= sprintf('%.2f', report.rpm) %></td>
         <td class="<%= 'bad' if report.total_errors > 0 %>"><%= report.total_errors %></td>
         <td class="<%= 'bad' if report.error_percentage > 0.0 %>"><%= sprintf('%.2f', report.error_percentage) %></td>
         <td><%= report.min %></td>

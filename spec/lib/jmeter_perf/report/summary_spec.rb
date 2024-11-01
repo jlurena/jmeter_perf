@@ -91,6 +91,7 @@ RSpec.describe JmeterPerf::Report::Summary do
       expect(File.read(output_file).split("\n")).to eq(
         <<~CSV.split("\n")
           Metric,Value
+          Name,tmp_summary_tests_test.jtl
           Average Response Time,
           Error Percentage,
           Max Response Time,0
@@ -100,6 +101,7 @@ RSpec.describe JmeterPerf::Report::Summary do
           95th Percentile,
           Requests Per Minute,
           Standard Deviation,
+          Total Run Time,
           Total Bytes,0
           Total Elapsed Time,0
           Total Errors,0
@@ -160,9 +162,11 @@ RSpec.describe JmeterPerf::Report::Summary do
       allow(summary.instance_variable_get(:@running_statistics_helper)).to receive(:avg).and_return(300.0)
       allow(summary.instance_variable_get(:@running_statistics_helper)).to receive(:std).and_return(20.0)
 
-      summary.instance_variable_set(:@total_errors, 5)
-      summary.instance_variable_set(:@total_requests, 100)
-      summary.instance_variable_set(:@total_elapsed_time, 50000) # in milliseconds
+      summary.total_errors = 5
+      summary.total_requests = 100
+      summary.total_elapsed_time = 50000
+      summary.instance_variable_set(:@start_time, 0)
+      summary.instance_variable_set(:@end_time, 5 * 60 * 1000)
     end
 
     it "calculates error percentage, average, percentiles, and requests per minute" do
@@ -173,7 +177,7 @@ RSpec.describe JmeterPerf::Report::Summary do
       expect(summary.p10).to eq(10.0)
       expect(summary.p50).to eq(50.0)
       expect(summary.p95).to eq(95.0)
-      expect(summary.requests_per_minute).to eq(120)
+      expect(summary.requests_per_minute).to eq(20.0)
       expect(summary.standard_deviation).to eq(20.0)
     end
   end

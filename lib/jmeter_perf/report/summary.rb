@@ -1,7 +1,6 @@
 require "csv"
 require "timeout"
 require_relative "../helpers/running_statistics"
-
 module JmeterPerf
   module Report
     # Summary provides a statistical analysis of performance test results by processing
@@ -9,48 +8,51 @@ module JmeterPerf
     # min/max response times, and percentiles, helping to understand the distribution of
     # response times across requests.
     # @note This class uses a TDigest data structure to keep statistics "close enough". Accuracy is not guaranteed.
+    #
+
+    # @!attribute [rw] avg
+    #   @return [Float] the average response time
+    # @!attribute [rw] error_percentage
+    #   @return [Float] the error percentage across all requests
+    # @!attribute [rw] max
+    #   @return [Integer] the maximum response time encountered
+    # @!attribute [rw] min
+    #   @return [Integer] the minimum response time encountered
+    # @!attribute [rw] p10
+    #   @return [Float] the 10th percentile of response times
+    # @!attribute [rw] p50
+    #   @return [Float] the median (50th percentile) of response times
+    # @!attribute [rw] p95
+    #   @return [Float] the 95th percentile of response times
+    # @!attribute [rw] requests_per_minute
+    #   @return [Float] the requests per minute rate
+    # @!attribute [rw] response_codes
+    #   @return [Hash<String, Integer>] a hash of response codes with their respective counts
+    # @!attribute [rw] standard_deviation
+    #   @return [Float] the standard deviation of response times
+    # @!attribute [rw] total_bytes
+    #   @return [Integer] the total number of bytes received
+    # @!attribute [rw] total_elapsed_time
+    #   @return [Integer] the total elapsed time in milliseconds
+    # @!attribute [rw] total_errors
+    #   @return [Integer] the total number of errors encountered
+    # @!attribute [rw] total_latency
+    #   @return [Integer] the total latency time across all requests
+    # @!attribute [rw] total_requests
+    #   @return [Integer] the total number of requests processed
+    # @!attribute [rw] total_sent_bytes
+    #   @return [Integer] the total number of bytes sent
+    # @!attribute [rw] csv_error_lines
+    #   @return [Array<Integer>] the line numbers of where CSV errors were encountered
+    # @!attribute [rw] total_run_time
+    #   @return [Integer] the total run time in seconds
+    # @!attribute [rw] name
+    #   @return [String] the name of the summary, derived from the file path if not provided
+    # @!attribute [rw] response_codes
+    #   @return [Hash<String, Integer>] a hash of response codes with their respective counts
+    # @!attribute [rw] csv_error_lines
+    #   @return [Array<Integer>] the line numbers of where CSV errors were encountered
     class Summary
-      # @return [String] the name of the summary, usually derived from the file path
-      attr_reader :name
-      # @return [Float] the average response time
-      attr_reader :avg
-      # @return [Float] the error percentage across all requests
-      attr_reader :error_percentage
-      # @return [Integer] the maximum response time encountered
-      attr_reader :max
-      # @return [Integer] the minimum response time encountered
-      attr_reader :min
-      # @return [Float] the 10th percentile of response times
-      attr_reader :p10
-      # @return [Float] the median (50th percentile) of response times
-      attr_reader :p50
-      # @return [Float] the 95th percentile of response times
-      attr_reader :p95
-      # @return [Float] the requests per minute rate
-      attr_reader :requests_per_minute
-      # @return [Hash<String, Integer>] a hash of response codes with their respective counts
-      attr_reader :response_codes
-      # @return [Float] the standard deviation of response times
-      attr_reader :standard_deviation
-      # @return [Integer] the total number of bytes received
-      attr_reader :total_bytes
-      # @return [Integer] the total elapsed time in milliseconds
-      attr_reader :total_elapsed_time
-      # @return [Integer] the total number of errors encountered
-      attr_reader :total_errors
-      # @return [Integer] the total latency time across all requests
-      attr_reader :total_latency
-      # @return [Integer] the total number of requests processed
-      attr_reader :total_requests
-      # @return [Integer] the total number of bytes sent
-      attr_reader :total_sent_bytes
-      # @return [Array<Integer>] the line numbers of where CSV errors were encountered
-      attr_reader :csv_error_lines
-
-      alias_method :rpm, :requests_per_minute
-      alias_method :std, :standard_deviation
-      alias_method :median, :p50
-
       # JTL file headers used for parsing CSV rows
       JTL_HEADER = %i[
         timeStamp
@@ -74,6 +76,7 @@ module JmeterPerf
 
       # @return [Hash<String, Symbol>] a mapping of CSV headers to their corresponding attribute symbols.
       CSV_HEADER_MAPPINGS = {
+        "Name" => :name,
         "Average Response Time" => :avg,
         "Error Percentage" => :error_percentage,
         "Max Response Time" => :max,
@@ -83,19 +86,25 @@ module JmeterPerf
         "95th Percentile" => :p95,
         "Requests Per Minute" => :requests_per_minute,
         "Standard Deviation" => :standard_deviation,
+        "Total Run Time" => :total_run_time,
         "Total Bytes" => :total_bytes,
         "Total Elapsed Time" => :total_elapsed_time,
         "Total Errors" => :total_errors,
         "Total Latency" => :total_latency,
         "Total Requests" => :total_requests,
         "Total Sent Bytes" => :total_sent_bytes
-        # "CSV Errors" => :csv_error_lines
         # "Response Code 200" => :response_codes["200"],
         # "Response Code 500" => :response_codes["500"] etc.
       }
 
-      attr_writer(*CSV_HEADER_MAPPINGS.values)
-      attr_writer :response_codes, :csv_error_lines
+      attr_accessor(*CSV_HEADER_MAPPINGS.values)
+      # Response codes have multiple keys, so we need to handle them separately
+      attr_accessor :response_codes
+      # CSV Error Lines are an array of integers that get delimited by ":" when written to the CSV
+      attr_accessor :csv_error_lines
+      alias_method :rpm, :requests_per_minute
+      alias_method :std, :standard_deviation
+      alias_method :median, :p50
 
       # Reads a generated CSV report and sets all appropriate attributes.
       #
@@ -107,13 +116,15 @@ module JmeterPerf
           metric = row["Metric"]
           value = row["Value"]
 
-          if CSV_HEADER_MAPPINGS.key?(metric)
-            summary.public_send(:"#{CSV_HEADER_MAPPINGS[metric]}=", value.include?(".") ? value.to_f : value.to_i)
+          if metric == "Name"
+            summary.name = value
           elsif metric.start_with?("Response Code")
             code = metric.split.last
             summary.response_codes[code] = value.to_i
           elsif metric == "CSV Errors"
             summary.csv_error_lines = value.split(":").map(&:to_i)
+          elsif CSV_HEADER_MAPPINGS.key?(metric)
+            summary.public_send(:"#{CSV_HEADER_MAPPINGS[metric]}=", value.include?(".") ? value.to_f : value.to_i)
           end
         end
         summary
@@ -142,6 +153,9 @@ module JmeterPerf
         @csv_error_lines = []
 
         @file_path = file_path
+
+        @start_time = nil
+        @end_time = nil
       end
 
       # Marks the summary as finished, allowing any pending asynchronous operations to complete.
@@ -203,7 +217,8 @@ module JmeterPerf
         @p10, @p50, @p95 = @running_statistics_helper.get_percentiles(0.1, 0.5, 0.95)
         @error_percentage = (@total_errors.to_f / @total_requests) * 100
         @avg = @running_statistics_helper.avg
-        @requests_per_minute = @total_elapsed_time.zero? ? 0 : (@total_requests / (@total_elapsed_time / 1000)) * 60
+        @total_run_time = ((@end_time - @start_time) / 1000).to_f  # Convert milliseconds to seconds
+        @requests_per_minute = @total_run_time.zero? ? 0 : (@total_requests / @total_run_time) * 60.0
         @standard_deviation = @running_statistics_helper.std
       end
 
@@ -229,7 +244,13 @@ module JmeterPerf
         CSV.parse(line, headers: JTL_HEADER, liberal_parsing: true).each do |row|
           line_item = row.to_hash
           elapsed = line_item.fetch(:elapsed).to_i
+          timestamp = line_item.fetch(:timeStamp).to_i
 
+          # Update start and end times
+          @start_time = timestamp if @start_time.nil? || timestamp < @start_time
+          @end_time = timestamp + elapsed if @end_time.nil? || (timestamp + elapsed) > @end_time
+
+          # Continue with processing the row as before...
           @running_statistics_helper.add_number(elapsed)
           @total_requests += 1
           @total_elapsed_time += elapsed

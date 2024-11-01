@@ -195,17 +195,18 @@ module JmeterPerf
         # @return [void]
         def generate_csv_report(output_path)
           CSV.open(output_path, "wb") do |csv|
-            csv << ["Label", "Requests", "Errors", "Error %", "Min", "Median", "Avg", "Max", "Std", "P10", "P50", "P95"]
+            csv << ["Label", "Total Requests", "Total Elapsed Time", "RPM", "Errors", "Error %", "Min", "Max", "Avg", "SD", "P10", "P50", "P95"]
             @reports.each_with_index do |report, index|
               csv << [
                 (index == 0) ? "Base Metric" : "Test Metric",
                 report.total_requests,
+                report.total_elapsed_time,
+                sprint("%.2f", report.rpm),
                 report.total_errors,
                 sprintf("%.2f", report.error_percentage),
                 report.min,
-                report.median,
-                sprintf("%.2f", report.avg),
                 report.max,
+                sprintf("%.2f", report.avg),
                 sprintf("%.2f", report.std),
                 sprintf("%.2f", report.p10),
                 sprintf("%.2f", report.p50),
