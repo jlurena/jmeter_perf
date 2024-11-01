@@ -9,7 +9,7 @@ namespace :dsl do
     dsl_dir = gem_dir.join("dsl")
     idl_xml_path = lib_dir.join("specifications/idl.xml")
 
-    generator = DSLGenerator.new(
+    generator = JmeterPerf::Helpers::DSLGenerator.new(
       dsl_dir: dsl_dir,
       idl_xml_path: idl_xml_path,
       document_dsl: false

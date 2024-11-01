@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element TestFragment
-    # @param [Hash] params Parameters for the TestFragment element (default: `{}`).
+    # @param params [Hash] Parameters for the TestFragment element (default: `{}`).
     # @yield block to attach to the TestFragment element
     # @return [JmeterPerf::TestFragment], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#testfragment

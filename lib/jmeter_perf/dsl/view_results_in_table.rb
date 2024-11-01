@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element ViewResultsInTable
-    # @param [Hash] params Parameters for the ViewResultsInTable element (default: `{}`).
+    # @param params [Hash] Parameters for the ViewResultsInTable element (default: `{}`).
     # @yield block to attach to the ViewResultsInTable element
     # @return [JmeterPerf::ViewResultsInTable], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#viewresultsintable

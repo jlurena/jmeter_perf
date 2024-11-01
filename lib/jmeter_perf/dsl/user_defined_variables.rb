@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element UserDefinedVariables
-    # @param [Hash] params Parameters for the UserDefinedVariables element (default: `{}`).
+    # @param params [Hash] Parameters for the UserDefinedVariables element (default: `{}`).
     # @yield block to attach to the UserDefinedVariables element
     # @return [JmeterPerf::UserDefinedVariables], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#userdefinedvariables

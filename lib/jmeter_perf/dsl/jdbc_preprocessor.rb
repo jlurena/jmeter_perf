@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element JDBCPreprocessor
-    # @param [Hash] params Parameters for the JDBCPreprocessor element (default: `{}`).
+    # @param params [Hash] Parameters for the JDBCPreprocessor element (default: `{}`).
     # @yield block to attach to the JDBCPreprocessor element
     # @return [JmeterPerf::JDBCPreprocessor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jdbcpreprocessor

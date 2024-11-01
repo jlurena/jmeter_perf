@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element HTTPRequestDefaults
-    # @param [Hash] params Parameters for the HTTPRequestDefaults element (default: `{}`).
+    # @param params [Hash] Parameters for the HTTPRequestDefaults element (default: `{}`).
     # @yield block to attach to the HTTPRequestDefaults element
     # @return [JmeterPerf::HTTPRequestDefaults], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#httprequestdefaults

@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element JSR223Postprocessor
-    # @param [Hash] params Parameters for the JSR223Postprocessor element (default: `{}`).
+    # @param params [Hash] Parameters for the JSR223Postprocessor element (default: `{}`).
     # @yield block to attach to the JSR223Postprocessor element
     # @return [JmeterPerf::JSR223Postprocessor], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#jsr223postprocessor

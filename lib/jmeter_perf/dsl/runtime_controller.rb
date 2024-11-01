@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element RuntimeController
-    # @param [Hash] params Parameters for the RuntimeController element (default: `{}`).
+    # @param params [Hash] Parameters for the RuntimeController element (default: `{}`).
     # @yield block to attach to the RuntimeController element
     # @return [JmeterPerf::RuntimeController], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#runtimecontroller

@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element Counter
-    # @param [Hash] params Parameters for the Counter element (default: `{}`).
+    # @param params [Hash] Parameters for the Counter element (default: `{}`).
     # @yield block to attach to the Counter element
     # @return [JmeterPerf::Counter], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#counter

@@ -28,7 +28,7 @@ end
 module JmeterPerf
   # Evaluates the test plan with the given parameters and block.
   # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation DSL Documentation
-  # @param [Hash] params Parameters for the test plan (default: `{}`).
+  # @param params [Hash] Parameters for the test plan (default: `{}`).
   # @yield The block to define the test plan steps.
   # @return [JmeterPerf::ExtendedDSL] The DSL instance with the configured test plan.
   def self.test(params = {}, &block)
@@ -56,7 +56,7 @@ module JmeterPerf
     attr_accessor :root
 
     # Initializes an ExtendedDSL object with the provided parameters.
-    # @param [Hash] params Parameters for the test plan (default: `{}`).
+    # @param params [Hash] Parameters for the test plan (default: `{}`).
     def initialize(params = {})
       @root = Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
         <<-EOF
@@ -74,7 +74,7 @@ module JmeterPerf
 
     # Saves the test plan as a JMX file.
     #
-    # @param [String] out_jmx The path for the output JMX file (default: `"ruby-jmeter.jmx"`).
+    # @param out_jmx [String] The path for the output JMX file (default: `"ruby-jmeter.jmx"`).
     def jmx(out_jmx: "ruby-jmeter.jmx")
       File.write(out_jmx, doc.to_xml(indent: 2))
       logger.info "JMX saved to: #{out_jmx}"
@@ -82,12 +82,13 @@ module JmeterPerf
 
     # Runs the test plan with the specified configuration.
     #
-    # @param [String] name The name of the test run (default: `"ruby-jmeter"`).
-    # @param [String] jmeter_path Path to the JMeter executable (default: `"jmeter"`).
-    # @param [String] out_jmx The filename for the output JMX file (default: `"ruby-jmeter.jmx"`).
-    # @param [String] out_jtl The filename for the output JTL file (default: `"jmeter.jtl"`).
-    # @param [String] out_jmeter_log The filename for the JMeter log file (default: `"jmeter.log"`).
-    # @param [String] out_cmd_log The filename for the command log file (default: `"jmeter-cmd.log"`).
+    # @param name [String] The name of the test run (default: `"ruby-jmeter"`).
+    # @param jmeter_path [String] Path to the JMeter executable (default: `"jmeter"`).
+    # @param out_jmx [String] The filename for the output JMX file (default: `"ruby-jmeter.jmx"`).
+    # @param out_jtl [String] The filename for the output JTL file (default: `"jmeter.jtl"`).
+    # @param out_jmeter_log [String] The filename for the JMeter log file (default: `"jmeter.log"`).
+    # @param out_cmd_log [String] The filename for the command log file (default: `"jmeter-cmd.log"`).
+    # @param jtl_read_timeout [Integer] The maximum number of seconds to wait for a line read (default: `3`).
     # @return [JmeterPerf::Report::Summary] The summary report of the test run.
     # @raise [RuntimeError] If the test execution fails.
     def run(
@@ -96,7 +97,8 @@ module JmeterPerf
       out_jmx: "ruby-jmeter.jmx",
       out_jtl: "jmeter.jtl",
       out_jmeter_log: "jmeter.log",
-      out_cmd_log: "jmeter-cmd.log"
+      out_cmd_log: "jmeter-cmd.log",
+      jtl_read_timeout: 3
     )
       jmx(out_jmx:)
       logger.warn "Executing #{out_jmx} test plan locally ..."
@@ -105,7 +107,7 @@ module JmeterPerf
         #{jmeter_path} -n -t #{out_jmx} -j #{out_jmeter_log} -l #{out_jtl}
       CMD
 
-      summary = JmeterPerf::Report::Summary.new(out_jtl, name)
+      summary = JmeterPerf::Report::Summary.new(file_path: out_jtl, name:, jtl_read_timeout:)
       jtl_process_thread = summary.stream_jtl_async
 
       File.open(out_cmd_log, "w") do |f|
@@ -140,7 +142,7 @@ module JmeterPerf
 
     # Attaches a node as the last child of the current node.
     #
-    # @param [Object] node The node to attach.
+    # @param node [Object] The node to attach.
     # @return [Object] The hash tree for the attached node.
     def attach_to_last(node)
       ht = hash_tree
@@ -151,7 +153,7 @@ module JmeterPerf
 
     # Attaches a node and evaluates the block within its context.
     #
-    # @param [Object] node The node to attach.
+    # @param node [Object] The node to attach.
     # @yield The block to be executed in the node's context.
     def attach_node(node, &block)
       ht = attach_to_last(node)

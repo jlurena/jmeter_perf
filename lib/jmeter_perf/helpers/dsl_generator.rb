@@ -90,7 +90,7 @@ module JmeterPerf
             module JmeterPerf
               class DSL
                 # DSL method synonymous with the JMeter Element #{klass}
-                # @param [Hash] params Parameters for the #{klass} element (default: `{}`).
+                # @param params [Hash] Parameters for the #{klass} element (default: `{}`).
                 # @yield block to attach to the #{klass} element
                 # @return [JmeterPerf::#{klass}], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
                 # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation##{klass.downcase}

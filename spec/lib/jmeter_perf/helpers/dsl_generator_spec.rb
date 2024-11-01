@@ -50,7 +50,7 @@ RSpec.describe JmeterPerf::Helpers::DSLGenerator do
         module JmeterPerf
           class DSL
             # DSL method synonymous with the JMeter Element SomeTest
-            # @param [Hash] params Parameters for the SomeTest element (default: `{}`).
+            # @param params [Hash] Parameters for the SomeTest element (default: `{}`).
             # @yield block to attach to the SomeTest element
             # @return [JmeterPerf::SomeTest], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
             # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#sometest

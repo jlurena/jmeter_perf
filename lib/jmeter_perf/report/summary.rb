@@ -102,7 +102,7 @@ module JmeterPerf
       # @param csv_path [String] the file path of the CSV report to read
       # @return [Summary] a new Summary instance with the parsed data
       def self.read(csv_path)
-        summary = new(csv_path)
+        summary = new(file_path: csv_path)
         CSV.foreach(csv_path, headers: true) do |row|
           metric = row["Metric"]
           value = row["Value"]
@@ -121,10 +121,12 @@ module JmeterPerf
 
       # Initializes a new Summary instance for analyzing performance data.
       #
-      # @param file_path [String] the file path of the file to analyze
+      # @param file_path [String] the file path of the performance file to summarize. Either a JTL or CSV file.
       # @param name [String, nil] an optional name for the summary, derived from the file path if not provided (default: nil)
-      def initialize(file_path, name = nil)
+      # @param jtl_read_timeout [Integer] the maximum number of seconds to wait for a line read (default: 3)
+      def initialize(file_path:, name: nil, jtl_read_timeout: 3)
         @name = name || file_path.to_s.tr("/", "_")
+        @jtl_read_timeout = jtl_read_timeout
         @finished = false
         @running_statistics_helper = JmeterPerf::Helpers::RunningStatistisc.new
 
@@ -207,9 +209,9 @@ module JmeterPerf
 
       private
 
-      def read_until_complete_line(file, line, max_wait_seconds = 5)
+      def read_until_complete_line(file, line)
         return if file.lineno == 1 # Skip the header row
-        Timeout.timeout(max_wait_seconds) do
+        Timeout.timeout(@jtl_read_timeout) do
           until line.end_with?("\n")
             sleep 0.1
             line += file.gets.to_s

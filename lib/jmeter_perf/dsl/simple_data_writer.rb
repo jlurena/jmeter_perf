@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element SimpleDataWriter
-    # @param [Hash] params Parameters for the SimpleDataWriter element (default: `{}`).
+    # @param params [Hash] Parameters for the SimpleDataWriter element (default: `{}`).
     # @yield block to attach to the SimpleDataWriter element
     # @return [JmeterPerf::SimpleDataWriter], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#simpledatawriter

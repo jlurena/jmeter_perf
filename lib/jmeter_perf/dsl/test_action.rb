@@ -1,7 +1,7 @@
 module JmeterPerf
   class DSL
     # DSL method synonymous with the JMeter Element TestAction
-    # @param [Hash] params Parameters for the TestAction element (default: `{}`).
+    # @param params [Hash] Parameters for the TestAction element (default: `{}`).
     # @yield block to attach to the TestAction element
     # @return [JmeterPerf::TestAction], a subclass of JmeterPerf::DSL that can be chained with other DSL methods.
     # @see https://github.com/jlurena/jmeter_perf/wiki/1.-DSL-Documentation#testaction

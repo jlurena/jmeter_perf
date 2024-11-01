@@ -6,7 +6,7 @@ TEST_TMP_DIR = "tmp/summary_tests".freeze
 RSpec.describe JmeterPerf::Report::Summary do
   let(:file_path) { "#{TEST_TMP_DIR}/test.jtl" }
   let(:output_file) { "#{TEST_TMP_DIR}/output_report.csv" }
-  let(:summary) { described_class.new(file_path) }
+  let(:summary) { described_class.new(file_path: file_path) }
 
   before(:all) do
     FileUtils.mkdir_p(TEST_TMP_DIR) # Ensure the test-specific tmp directory exists
