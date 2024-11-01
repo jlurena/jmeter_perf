@@ -51,7 +51,7 @@ module JmeterPerf
       # @return [Boolean] true if comparison meets the criteria
       def pass?(cohens_d_limit: nil, effect_size: :vsmall, direction: :both)
         limit = cohens_d_limit || EFFECT_SIZE_LIMITS[effect_size]
-        raise ArgumentError, "Invalid effect size: #{effect_size}" unless cohens_d_limit
+        raise ArgumentError, "Invalid effect size: #{effect_size}" unless limit
 
         raise ArgumentError, "Invalid direction: #{direction}" unless EFFECT_SIZE_DIRECTION.include?(direction)
 
