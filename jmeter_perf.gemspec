@@ -14,10 +14,6 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/jlurena/jmeter_perf"
   spec.required_ruby_version = ">= 3.0.0"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/jlurena/jmeter_perf"
-  spec.metadata["changelog_uri"] = "https://github.com/jlurena/jmeter_perf/blob/main/CHANGELOG.md"
-
   gemspec = File.basename(__FILE__)
   spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |f|
@@ -29,6 +25,7 @@ Gem::Specification.new do |spec|
     "changelog_uri" => "https://github.com/jlurena/jmeter_perf/blob/main/CHANGELOG.md",
     "documentation_uri" => "https://rubydoc.info/gems/jmeter_perf/",
     "source_code_uri" => "https://github.com/jlurena/jmeter_perf",
+    "homepage_uri" => spec.homepage,
     "wiki_uri" => "https://github.com/jlurena/jmeter_perf/wiki"
   }
   spec.bindir = "exe"

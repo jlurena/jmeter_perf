@@ -72,27 +72,56 @@ module JmeterPerf
         Connect
       ]
 
+      # @return [Hash<String, Symbol>] a mapping of CSV headers to their corresponding attribute symbols.
       CSV_HEADER_MAPPINGS = {
-        "Average Response Time" => :@avg,
-        "Error Percentage" => :@error_percentage,
-        "Max Response Time" => :@max,
-        "Min Response Time" => :@min,
-        "10th Percentile" => :@p10,
-        "Median (50th Percentile)" => :@p50,
-        "95th Percentile" => :@p95,
-        "Requests Per Minute" => :@requests_per_minute,
-        "Standard Deviation" => :@standard_deviation,
-        "Total Bytes" => :@total_bytes,
-        "Total Elapsed Time" => :@total_elapsed_time,
-        "Total Errors" => :@total_errors,
-        "Total Latency" => :@total_latency,
-        "Total Requests" => :@total_requests,
-        "Total Sent Bytes" => :@total_sent_bytes
+        "Average Response Time" => :avg,
+        "Error Percentage" => :error_percentage,
+        "Max Response Time" => :max,
+        "Min Response Time" => :min,
+        "10th Percentile" => :p10,
+        "Median (50th Percentile)" => :p50,
+        "95th Percentile" => :p95,
+        "Requests Per Minute" => :requests_per_minute,
+        "Standard Deviation" => :standard_deviation,
+        "Total Bytes" => :total_bytes,
+        "Total Elapsed Time" => :total_elapsed_time,
+        "Total Errors" => :total_errors,
+        "Total Latency" => :total_latency,
+        "Total Requests" => :total_requests,
+        "Total Sent Bytes" => :total_sent_bytes
+        # "CSV Errors" => :csv_error_lines
+        # "Response Code 200" => :response_codes["200"],
+        # "Response Code 500" => :response_codes["500"] etc.
       }
+
+      attr_writer(*CSV_HEADER_MAPPINGS.values)
+      attr_writer :response_codes, :csv_error_lines
+
+      # Reads a generated CSV report and sets all appropriate attributes.
+      #
+      # @param csv_path [String] the file path of the CSV report to read
+      # @return [Summary] a new Summary instance with the parsed data
+      def self.read(csv_path)
+        summary = new(csv_path)
+        CSV.foreach(csv_path, headers: true) do |row|
+          metric = row["Metric"]
+          value = row["Value"]
+
+          if CSV_HEADER_MAPPINGS.key?(metric)
+            summary.public_send(:"#{CSV_HEADER_MAPPINGS[metric]}=", value.include?(".") ? value.to_f : value.to_i)
+          elsif metric.start_with?("Response Code")
+            code = metric.split.last
+            summary.response_codes[code] = value.to_i
+          elsif metric == "CSV Errors"
+            summary.csv_error_lines = value.split(":").map(&:to_i)
+          end
+        end
+        summary
+      end
 
       # Initializes a new Summary instance for analyzing performance data.
       #
-      # @param file_path [String] the file path of the JTL file to analyze
+      # @param file_path [String] the file path of the file to analyze
       # @param name [String, nil] an optional name for the summary, derived from the file path if not provided (default: nil)
       def initialize(file_path, name = nil)
         @name = name || file_path.to_s.tr("/", "_")
@@ -121,31 +150,21 @@ module JmeterPerf
         @processing_jtl_thread.join if @processing_jtl_thread&.alive?
       end
 
-      # Reads the generated CSV report and sets all appropriate attributes.
+      # Generates a CSV report with the given output file.
       #
-      # @param csv_file [String] the file path of the CSV report to read
+      # The CSV report includes the following:
+      # - A header row with "Metric" and "Value".
+      # - Rows for each metric and its corresponding value from `CSV_HEADER_MAPPINGS`.
+      # - Rows for each response code and its count from `@response_codes`.
+      # - A row for CSV errors, concatenated with ":".
+      #
+      # @param output_file [String] The path to the output CSV file.
       # @return [void]
-      def read_csv_report(csv_file)
-        CSV.foreach(csv_file, headers: true) do |row|
-          metric = row["Metric"]
-          value = row["Value"]
-
-          if CSV_HEADER_MAPPINGS.key?(metric)
-            instance_variable_set(CSV_HEADER_MAPPINGS[metric], value.to_f)
-          elsif metric.start_with?("Response Code")
-            code = metric.split.last
-            @response_codes[code] = value.to_i
-          elsif metric == "CSV Errors"
-            @csv_error_lines = value.split(":")
-          end
-        end
-      end
-
-      def generate_csv_report(output_file)
+      def write_csv(output_file)
         CSV.open(output_file, "wb") do |csv|
           csv << ["Metric", "Value"]
           CSV_HEADER_MAPPINGS.each do |metric, value|
-            csv << [metric, instance_variable_get(value)]
+            csv << [metric, public_send(value)]
           end
           @response_codes.each do |code, count|
             csv << ["Response Code #{code}", count]

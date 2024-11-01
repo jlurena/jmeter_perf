@@ -16,58 +16,7 @@ RSpec.describe JmeterPerf::Report::Summary do
     FileUtils.rm_rf(TEST_TMP_DIR) # Clean up the test-specific tmp directory after all tests
   end
 
-  describe "#initialize" do
-    it "sets the name based on the file path if no name is provided" do
-      expect(summary.name).to eq(file_path.tr("/", "_"))
-    end
-
-    it "initializes the response codes as an empty hash" do
-      expect(summary.response_codes).to eq({})
-    end
-
-    it "initializes total bytes, elapsed time, errors, latency, requests, and sent bytes to zero" do
-      expect(summary.total_bytes).to eq(0)
-      expect(summary.total_elapsed_time).to eq(0)
-      expect(summary.total_errors).to eq(0)
-      expect(summary.total_latency).to eq(0)
-      expect(summary.total_requests).to eq(0)
-      expect(summary.total_sent_bytes).to eq(0)
-    end
-  end
-
-  describe "#generate_csv_report" do
-    it "generates a file with the summary metrics and response codes" do
-      summary.instance_variable_set(:@response_codes, {"200" => 95, "500" => 5})
-      summary.generate_csv_report(output_file)
-
-      expect(File.read(output_file).split("\n")).to eq(
-        <<~CSV.split("\n")
-          Metric,Value
-          Average Response Time,
-          Error Percentage,
-          Max Response Time,0
-          Min Response Time,1000000
-          10th Percentile,
-          Median (50th Percentile),
-          95th Percentile,
-          Requests Per Minute,
-          Standard Deviation,
-          Total Bytes,0
-          Total Elapsed Time,0
-          Total Errors,0
-          Total Latency,0
-          Total Requests,0
-          Total Sent Bytes,0
-          Response Code 200,95
-          Response Code 500,5
-          CSV Errors,""
-
-        CSV
-      )
-    end
-  end
-
-  describe "#read_csv_report" do
+  describe ".read" do
     before do
       File.open(output_file, "w") do |file|
         file.puts "Metric,Value"
@@ -93,7 +42,7 @@ RSpec.describe JmeterPerf::Report::Summary do
     end
 
     it "reads the CSV report and sets the appropriate attributes" do
-      summary.read_csv_report(output_file)
+      summary = described_class.read(output_file)
 
       expect(summary.avg).to eq(300.0)
       expect(summary.error_percentage).to eq(5.0)
@@ -111,7 +60,58 @@ RSpec.describe JmeterPerf::Report::Summary do
       expect(summary.total_requests).to eq(100)
       expect(summary.total_sent_bytes).to eq(2048)
       expect(summary.response_codes).to eq({"200" => 95, "500" => 5})
-      expect(summary.csv_error_lines).to eq(["5", "10"])
+      expect(summary.csv_error_lines).to eq([5, 10])
+    end
+  end
+
+  describe "#initialize" do
+    it "sets the name based on the file path if no name is provided" do
+      expect(summary.name).to eq(file_path.tr("/", "_"))
+    end
+
+    it "initializes the response codes as an empty hash" do
+      expect(summary.response_codes).to eq({})
+    end
+
+    it "initializes total bytes, elapsed time, errors, latency, requests, and sent bytes to zero" do
+      expect(summary.total_bytes).to eq(0)
+      expect(summary.total_elapsed_time).to eq(0)
+      expect(summary.total_errors).to eq(0)
+      expect(summary.total_latency).to eq(0)
+      expect(summary.total_requests).to eq(0)
+      expect(summary.total_sent_bytes).to eq(0)
+    end
+  end
+
+  describe "#write_csv" do
+    it "generates a file with the summary metrics and response codes" do
+      summary.instance_variable_set(:@response_codes, {"200" => 95, "500" => 5})
+      summary.write_csv(output_file)
+
+      expect(File.read(output_file).split("\n")).to eq(
+        <<~CSV.split("\n")
+          Metric,Value
+          Average Response Time,
+          Error Percentage,
+          Max Response Time,0
+          Min Response Time,1000000
+          10th Percentile,
+          Median (50th Percentile),
+          95th Percentile,
+          Requests Per Minute,
+          Standard Deviation,
+          Total Bytes,0
+          Total Elapsed Time,0
+          Total Errors,0
+          Total Latency,0
+          Total Requests,0
+          Total Sent Bytes,0
+          Response Code 200,95
+          Response Code 500,5
+          CSV Errors,""
+
+        CSV
+      )
     end
   end
 
