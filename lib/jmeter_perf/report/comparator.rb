@@ -25,8 +25,25 @@ module JmeterPerf
         huge: 2.0      # huge
       }
 
-      # Valid effect size directions
+      # Valid effect size directions.
+      #   `positive` means the test report is better than the base report.
+      #   `negative` means the test report is worse than the base report.
       EFFECT_SIZE_DIRECTION = %i[positive negative both]
+      COMPARISON_REPORT_HEADER = [
+        "Label",
+        "Total Requests",
+        "Total Elapsed Time",
+        "RPM",
+        "Errors",
+        "Error %",
+        "Min",
+        "Max",
+        "Avg",
+        "SD",
+        "P10",
+        "P50",
+        "P95"
+      ]
 
       # Initializes a Comparator instance to compare two reports.
       #
@@ -45,14 +62,13 @@ module JmeterPerf
       # @param cohens_d_limit [Float, nil] optional limit for Cohen's D (default: nil)
       # @param effect_size [Symbol] the desired effect size threshold (default: :vsmall).
       #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_LIMITS} for options.
-      # @param direction [Symbol] the direction of comparison, e.g., :positive (default: :both)
+      # @param direction [Symbol] the direction of comparison, e.g., :positive (default: :negative)
       #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_DIRECTION} for options.
       # @raise [ArgumentError] if the effect size or direction is invalid
       # @return [Boolean] true if comparison meets the criteria
-      def pass?(cohens_d_limit: nil, effect_size: :vsmall, direction: :both)
+      def pass?(cohens_d_limit: nil, effect_size: :vsmall, direction: :positive)
         limit = cohens_d_limit || EFFECT_SIZE_LIMITS[effect_size]
         raise ArgumentError, "Invalid effect size: #{effect_size}" unless limit
-
         raise ArgumentError, "Invalid direction: #{direction}" unless EFFECT_SIZE_DIRECTION.include?(direction)
 
         case direction
@@ -60,8 +76,6 @@ module JmeterPerf
           cohens_d >= limit
         when :negative
           cohens_d <= -limit
-        when :both
-          cohens_d >= limit || !(cohens_d <= -limit)
         end
       end
 
@@ -162,6 +176,33 @@ module JmeterPerf
           @reports = reports
         end
 
+        # Prints a comparison report to standard output.
+        #
+        # @return [void]
+        def print_comparison
+          puts "Comparison Report"
+          puts "-" * 90
+          puts format_line(COMPARISON_REPORT_HEADER)
+          puts "-" * 90
+          @reports.each_with_index do |report, index|
+            puts format_line([
+              (index == 0) ? "Base Metric" : "Test Metric",
+              report.total_requests,
+              report.total_run_time,
+              sprintf("%.2f", report.rpm),
+              report.total_errors,
+              sprintf("%.2f", report.error_percentage),
+              report.min,
+              report.max,
+              sprintf("%.2f", report.avg),
+              sprintf("%.2f", report.std),
+              sprintf("%.2f", report.p10),
+              sprintf("%.2f", report.p50),
+              sprintf("%.2f", report.p95)
+            ])
+          end
+        end
+
         # Generates a report in the specified format at the given path.
         #
         # @param output_path [String] the path to save the generated report
@@ -195,7 +236,7 @@ module JmeterPerf
         # @return [void]
         def generate_csv_report(output_path)
           CSV.open(output_path, "wb") do |csv|
-            csv << ["Label", "Total Requests", "Total Elapsed Time", "RPM", "Errors", "Error %", "Min", "Max", "Avg", "SD", "P10", "P50", "P95"]
+            csv << COMPARISON_REPORT_HEADER
             @reports.each_with_index do |report, index|
               csv << [
                 (index == 0) ? "Base Metric" : "Test Metric",

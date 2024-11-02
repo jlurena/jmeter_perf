@@ -68,7 +68,7 @@
   </div>
   <table>
     <tr class="header-row">
-      <% ['Label', 'Total Requests', 'Total Elapsed Time', 'RPM', 'Errors', 'Error %', 'Min', 'Max', 'Avg', 'SD', 'P10', 'P50', 'P95'].each do |header| %>
+      <% JmeterPerf::Report::Comparator::COMPARISON_REPORT_HEADER.each do |header| %>
         <td class="tooltip"><%= header %>
           <span class="tooltiptext"><%= "Description for #{header}" %></span>
         </td>
