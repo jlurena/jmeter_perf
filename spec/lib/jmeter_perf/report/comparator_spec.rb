@@ -25,33 +25,20 @@ RSpec.describe JmeterPerf::Report::Comparator do
   end
 
   describe "#pass?" do
-    context "with positive direction" do
-      it "returns true if Cohen's D is greater than or equal to the limit" do
-        allow(comparator).to receive(:cohens_d).and_return(0.3)
-        expect(comparator.pass?(cohens_d_limit: 0.2, direction: :positive)).to be true
+    context "when testing for very small impact" do
+      it "returns true if Cohen's D is positive" do
+        allow(comparator).to receive(:cohens_d).and_return(0.5)
+        expect(comparator.pass?(effect_size: :vsmall)).to be true
       end
 
-      it "returns false if Cohen's D is less than the limit" do
-        allow(comparator).to receive(:cohens_d).and_return(0.1)
-        expect(comparator.pass?(cohens_d_limit: 0.2, direction: :positive)).to be false
-      end
-    end
-
-    context "with negative direction" do
-      it "returns true if Cohen's D is less than or equal to the negative limit" do
-        allow(comparator).to receive(:cohens_d).and_return(-0.3)
-        expect(comparator.pass?(cohens_d_limit: 0.2, direction: :negative)).to be true
+      it "returns true if Cohen's D is greater than or equal to the negative limit" do
+        allow(comparator).to receive(:cohens_d).and_return(-0.01)
+        expect(comparator.pass?(effect_size: :vsmall)).to be true
       end
 
-      it "returns false if Cohen's D is greater than the negative limit" do
-        allow(comparator).to receive(:cohens_d).and_return(-0.1)
-        expect(comparator.pass?(cohens_d_limit: 0.2, direction: :negative)).to be false
-      end
-    end
-
-    context "with invalid direction" do
-      it "raises an error" do
-        expect { comparator.pass?(direction: :invalid) }.to raise_error(ArgumentError)
+      it "returns false if Cohen's D is less than the negative limit" do
+        allow(comparator).to receive(:cohens_d).and_return(-0.5)
+        expect(comparator.pass?(effect_size: :vsmall)).to be false
       end
     end
 

@@ -13,26 +13,15 @@ RSpec::Matchers.define :pass_performance_test do
     @effect_size = effect_size
   end
 
-  chain :with_direction do |direction|
-    @direction = direction
-  end
-
   chain :with_cohen_d_limit do |limit|
     @cohen_limit = limit
-  end
-
-  chain :with do |options|
-    @effect_size = options[:effect_size]
-    @direction = options[:direction]
-    @cohen_limit = options[:cohen_limit]
   end
 
   match do |comparator|
     if comparator.is_a?(JmeterPerf::Report::Comparator)
       comparator.pass?(
         cohens_d_limit: @cohen_limit || nil,
-        effect_size: @effect_size || :vsmall,
-        direction: @direction || :both
+        effect_size: @effect_size || :vsmall
       )
     else
       false

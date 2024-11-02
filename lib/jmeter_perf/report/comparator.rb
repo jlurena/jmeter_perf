@@ -25,10 +25,6 @@ module JmeterPerf
         huge: 2.0      # huge
       }
 
-      # Valid effect size directions.
-      #   `positive` means the test report is better than the base report.
-      #   `negative` means the test report is worse than the base report.
-      EFFECT_SIZE_DIRECTION = %i[positive negative both]
       COMPARISON_REPORT_HEADER = [
         "Label",
         "Total Requests",
@@ -57,26 +53,18 @@ module JmeterPerf
         compare_reports!
       end
 
-      # Checks if the comparison passes based on Cohen's D and effect size.
+      # Checks if the comparison passes based on Cohen's D and effect size threshold.
       # @note If no Cohen's D limit is provided, the `effect_size` threshold is used.
-      # @param cohens_d_limit [Float, nil] optional limit for Cohen's D (default: nil)
+      # @note Positive effect size indicates an increase in performance and is considered a pass.
+      # @param cohens_d_limit [Float, nil] optional negative limit for Cohen's D
       # @param effect_size [Symbol] the desired effect size threshold (default: :vsmall).
       #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_LIMITS} for options.
-      # @param direction [Symbol] the direction of comparison, e.g., :positive (default: :negative)
-      #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_DIRECTION} for options.
-      # @raise [ArgumentError] if the effect size or direction is invalid
+      # @raise [ArgumentError] if the effect size is invalid
       # @return [Boolean] true if comparison meets the criteria
-      def pass?(cohens_d_limit: nil, effect_size: :vsmall, direction: :positive)
+      def pass?(cohens_d_limit: nil, effect_size: :vsmall)
         limit = cohens_d_limit || EFFECT_SIZE_LIMITS[effect_size]
         raise ArgumentError, "Invalid effect size: #{effect_size}" unless limit
-        raise ArgumentError, "Invalid direction: #{direction}" unless EFFECT_SIZE_DIRECTION.include?(direction)
-
-        case direction
-        when :positive
-          cohens_d >= limit
-        when :negative
-          cohens_d <= -limit
-        end
+        cohens_d >= -limit.abs
       end
 
       # Generates comparison reports in specified formats.
