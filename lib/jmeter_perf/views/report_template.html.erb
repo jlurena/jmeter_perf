@@ -78,7 +78,7 @@
       <tr>
         <td><%= index == 0 ? "Base Metric" : "Test Metric" %></td>
         <td><%= report.total_requests %></td>
-        <td><%= report.total_elapsed_time %></td>
+        <td><%= report.total_run_time %></td>
         <td><%= sprintf('%.2f', report.rpm) %></td>
         <td class="<%= 'bad' if report.total_errors > 0 %>"><%= report.total_errors %></td>
         <td class="<%= 'bad' if report.error_percentage > 0.0 %>"><%= sprintf('%.2f', report.error_percentage) %></td>

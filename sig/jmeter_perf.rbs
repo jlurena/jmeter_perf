@@ -32,7 +32,6 @@ module JmeterPerf
       attr_reader response_codes: Hash[String, Integer]
       attr_reader standard_deviation: Float
       attr_reader total_bytes: Integer
-      attr_reader total_elapsed_time: Integer
       attr_reader total_errors: Integer
       attr_reader total_latency: Integer
       attr_reader total_requests: Integer

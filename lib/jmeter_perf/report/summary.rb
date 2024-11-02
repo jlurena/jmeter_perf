@@ -32,8 +32,6 @@ module JmeterPerf
     #   @return [Float] the standard deviation of response times
     # @!attribute [rw] total_bytes
     #   @return [Integer] the total number of bytes received
-    # @!attribute [rw] total_elapsed_time
-    #   @return [Integer] the total elapsed time in milliseconds
     # @!attribute [rw] total_errors
     #   @return [Integer] the total number of errors encountered
     # @!attribute [rw] total_latency
@@ -88,7 +86,6 @@ module JmeterPerf
         "Standard Deviation" => :standard_deviation,
         "Total Run Time" => :total_run_time,
         "Total Bytes" => :total_bytes,
-        "Total Elapsed Time" => :total_elapsed_time,
         "Total Errors" => :total_errors,
         "Total Latency" => :total_latency,
         "Total Requests" => :total_requests,
@@ -145,7 +142,6 @@ module JmeterPerf
         @min = 1_000_000
         @response_codes = Hash.new { |h, k| h[k.to_s] = 0 }
         @total_bytes = 0
-        @total_elapsed_time = 0
         @total_errors = 0
         @total_latency = 0
         @total_requests = 0
@@ -253,7 +249,6 @@ module JmeterPerf
           # Continue with processing the row as before...
           @running_statistics_helper.add_number(elapsed)
           @total_requests += 1
-          @total_elapsed_time += elapsed
           @response_codes[line_item.fetch(:responseCode)] += 1
           @total_errors += (line_item.fetch(:success) == "true") ? 0 : 1
           @total_bytes += line_item.fetch(:bytes, 0).to_i

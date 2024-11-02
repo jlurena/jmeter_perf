@@ -200,7 +200,7 @@ module JmeterPerf
               csv << [
                 (index == 0) ? "Base Metric" : "Test Metric",
                 report.total_requests,
-                report.total_elapsed_time,
+                report.total_run_time,
                 sprintf("%.2f", report.rpm),
                 report.total_errors,
                 sprintf("%.2f", report.error_percentage),
