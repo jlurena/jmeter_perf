@@ -30,7 +30,7 @@ RSpec::Matchers.define :pass_performance_test do
 
   failure_message do |comparator|
     if comparator.is_a?(JmeterPerf::Report::Comparator)
-      "#{comparator.name} failed: #{comparator.cohens_d} | #{comparator.human_rating}\n#{comparator.comparison_to_s}"
+      "Performance Test Failed\n#{comparator}"
     else
       "#{comparator.class.name} is not a valid comparator"
     end
@@ -38,7 +38,7 @@ RSpec::Matchers.define :pass_performance_test do
 
   failure_message_when_negated do |comparator|
     if comparator.is_a?(JmeterPerf::Report::Comparator)
-      "#{comparator.name} passed: #{comparator.cohens_d} | #{comparator.human_rating}"
+      "Performance Test Passed\n#{comparator}"
     else
       "#{comparator.class.name} is not a valid comparator"
     end
