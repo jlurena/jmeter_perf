@@ -1,11 +1,45 @@
 require "spec_helper"
+require "jmeter_perf/report/comparator"
 
 RSpec.describe JmeterPerf::Report::Comparator do
-  let(:base_report) { instance_double("Summary", avg: 100.0, std: 15.0, total_requests: 1000) }
-  let(:test_report) { instance_double("Summary", avg: 120.0, std: 20.0, total_requests: 1000) }
+  let(:base_report) do
+    instance_double(
+      "Summary",
+      avg: 150.0,
+      std: 25.0,
+      total_requests: 1000,
+      total_run_time: 1000,
+      rpm: 120.0,
+      total_errors: 5,
+      error_percentage: 0.5,
+      min: 100,
+      max: 200,
+      p10: 110.0,
+      p50: 150.0,
+      p95: 190.0
+    )
+  end
+
+  let(:test_report) do
+    instance_double(
+      "Summary",
+      avg: 160.0,
+      std: 30.0,
+      total_requests: 1200,
+      total_run_time: 1200,
+      rpm: 130.0,
+      total_errors: 8,
+      error_percentage: 0.67,
+      min: 110,
+      max: 210,
+      p10: 115.0,
+      p50: 160.0,
+      p95: 200.0
+    )
+  end
   let(:name) { "comparison_test" }
   let(:comparator) { described_class.new(base_report, test_report, name) }
-  let(:generator_class) { JmeterPerf::Report::Comparator.const_get(:Generator) }
+  let(:output_dir) { "tmp/" }
 
   describe "#initialize" do
     it "initializes with base and test reports" do
@@ -25,7 +59,7 @@ RSpec.describe JmeterPerf::Report::Comparator do
   end
 
   describe "#pass?" do
-    context "when testing for very small impact" do
+    context "when testing for impact" do
       it "returns true if Cohen's D is positive" do
         allow(comparator).to receive(:cohens_d).and_return(0.5)
         expect(comparator.pass?(effect_size: :vsmall)).to be true
@@ -50,25 +84,89 @@ RSpec.describe JmeterPerf::Report::Comparator do
   end
 
   describe "#generate_reports" do
-    let(:generator) { instance_double(generator_class) }
+    it "generates both HTML and CSV reports with :all format and checks contents" do
+      expect {
+        comparator.generate_reports(output_dir: output_dir, output_format: :all)
+      }.to output.to_stdout
 
-    before do
-      allow(generator_class).to receive(:new).and_return(generator)
+      html_report_path = File.join(output_dir, "comparison_test_comparison_report.html")
+      csv_report_path = File.join(output_dir, "comparison_test_comparison_report.csv")
+
+      expect(File).to exist(html_report_path)
+      expect(File).to exist(csv_report_path)
+
+      html_content = File.read(html_report_path)
+      csv_content = File.read(csv_report_path)
+
+      expect(html_content).to include("Comparison Report")
+      expect(html_content).to include("<b>Cohen's D:</b> #{comparator.cohens_d}<br>")
+      expect(html_content).to include("<b>Summary:</b> #{comparator.human_rating}")
+
+      expect(csv_content).to include("Label,Total Requests,Total Elapsed Time,RPM,Errors,Error %,Min,Max,Avg,SD,P10,P50,P95")
+      expect(csv_content).to include("Base Metric,1000,1000,120.00,5,0.50,100,200,150.00,25.00,110.00,150.00,190.00")
+      expect(csv_content).to include("Test Metric,1200,1200,130.00,8,0.67,110,210,160.00,30.00,115.00,160.00,200.00")
     end
 
-    it "generates both HTML and CSV reports with :all format" do
-      expect(generator).to receive(:generate_report).with("./comparison_test_comparison_report.html", :html)
-      expect(generator).to receive(:generate_report).with("./comparison_test_comparison_report.csv", :csv)
-      comparator.generate_reports(output_dir: ".", output_format: :all)
-    end
+    it "generates only HTML report with :html format and checks contents" do
+      comparator.generate_reports(output_dir: output_dir, output_format: :html)
 
-    it "generates only HTML report with :html format" do
-      expect(generator).to receive(:generate_report).with("./comparison_test_comparison_report.html", :html)
-      comparator.generate_reports(output_dir: ".", output_format: :html)
+      html_report_path = File.join(output_dir, "comparison_test_comparison_report.html")
+      expect(File).to exist(html_report_path)
+
+      html_content = File.read(html_report_path)
+      expect(html_content).to include("Comparison Report")
+      expect(html_content).to include("<b>Cohen's D:</b> #{comparator.cohens_d}<br>")
+      expect(html_content).to include("<b>Summary:</b> #{comparator.human_rating}")
     end
 
     it "raises an error for invalid output format" do
       expect { comparator.generate_reports(output_format: :invalid) }.to raise_error(ArgumentError)
+    end
+
+    it "generates the report to stdout and matches the output" do
+      expected_output = <<~OUTPUT
+        Comparison Report
+        Cohen's D: #{comparator.cohens_d}
+        Human Rating: #{comparator.human_rating}
+        ---------------------------------------------------------------------------------------------------------------------------------------
+        Label           Total Requests    Total Elapsed Time    RPM      Errors   Error %   Min     Max     Avg      SD       P10      P50      P95
+        ---------------------------------------------------------------------------------------------------------------------------------------
+        Base Metric     1000              1000               120.00   5        0.50      100     200     150.00   25.00    110.00   150.00   190.00
+        Test Metric     1200              1200               130.00   8        0.67      110     210     160.00   30.00    115.00   160.00   200.00
+        ---------------------------------------------------------------------------------------------------------------------------------------
+      OUTPUT
+
+      allow(base_report).to receive_messages(total_requests: 1000, total_run_time: 1000, rpm: 120.0, total_errors: 5, error_percentage: 0.5, min: 100, max: 200, avg: 150.0, std: 25.0, p10: 110.0, p50: 150.0, p95: 190.0)
+      allow(test_report).to receive_messages(total_requests: 1200, total_run_time: 1200, rpm: 130.0, total_errors: 8, error_percentage: 0.67, min: 110, max: 210, avg: 160.0, std: 30.0, p10: 115.0, p50: 160.0, p95: 200.0)
+
+      actual_output = comparator.to_s.strip.gsub(/\s+/, " ")
+      expected_output = expected_output.strip.gsub(/\s+/, " ")
+
+      expect(actual_output).to eq(expected_output)
+    end
+  end
+
+  describe "#to_s" do
+    it "returns a string representation of the comparison report with Cohen's D and human rating" do
+      expected_output = <<~OUTPUT
+        Comparison Report
+        Cohen's D: -0.36
+        Human Rating: Small decrease
+        ---------------------------------------------------------------------------------------------------------------------------------------
+        Label           Total Requests    Total Elapsed Time    RPM      Errors   Error %   Min     Max     Avg      SD       P10      P50      P95
+        ---------------------------------------------------------------------------------------------------------------------------------------
+        Base Metric     1000              1000               120.00   5        0.50      100     200     150.00   25.00    110.00   150.00   190.00
+        Test Metric     1200              1200               130.00   8        0.67      110     210     160.00   30.00    115.00   160.00   200.00
+        ---------------------------------------------------------------------------------------------------------------------------------------
+      OUTPUT
+
+      allow(base_report).to receive_messages(total_requests: 1000, total_run_time: 1000, rpm: 120.0, total_errors: 5, error_percentage: 0.5, min: 100, max: 200, avg: 150.0, std: 25.0, p10: 110.0, p50: 150.0, p95: 190.0)
+      allow(test_report).to receive_messages(total_requests: 1200, total_run_time: 1200, rpm: 130.0, total_errors: 8, error_percentage: 0.67, min: 110, max: 210, avg: 160.0, std: 30.0, p10: 115.0, p50: 160.0, p95: 200.0)
+
+      actual_output = comparator.to_s.strip.gsub(/\s+/, " ")
+      expected_output = expected_output.strip.gsub(/\s+/, " ")
+
+      expect(actual_output).to eq(expected_output)
     end
   end
 end

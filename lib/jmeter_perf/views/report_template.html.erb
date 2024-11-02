@@ -57,14 +57,14 @@
   </style>
 </head>
 <body>
-  <% if @comparator.name %>
-    <h2>Comparison Report for <span style="text-decoration: underline;"><%= @comparator.name %></span></h2>
+  <% if @name %>
+    <h2>Comparison Report for <span style="text-decoration: underline;"><%= @name %></span></h2>
   <% end %>
   <div class="summary-box" id="summary-box">
     <b>Report Generated:</b> <%= Time.now.strftime("%Y-%m-%d %H:%M:%S") %><br>
-    <b>Cohen's D:</b> <%= @comparator.cohens_d %><br>
-    <b>T Statistics:</b> <%= @comparator.t_statistic %><br>
-    <b>Summary:</b> <%= @comparator.human_rating %> in performance
+    <b>Cohen's D:</b> <%= @cohens_d %><br>
+    <b>T Statistic:</b> <%= @t_statistic %><br>
+    <b>Summary:</b> <%= @human_rating %> in performance
   </div>
   <table>
     <tr class="header-row">
@@ -74,7 +74,7 @@
         </td>
       <% end %>
     </tr>
-    <% @reports.each_with_index do |report, index| %>
+    <% [@base_report, @test_report].each_with_index do |report, index| %>
       <tr>
         <td><%= index == 0 ? "Base Metric" : "Test Metric" %></td>
         <td><%= report.total_requests %></td>
@@ -96,7 +96,7 @@
     import ColorScale from "https://cdn.skypack.dev/color-scales";
     document.addEventListener('DOMContentLoaded', function () {
       const summaryBox = document.getElementById('summary-box');
-      const cohenValue = <%= @comparator.cohens_d %>;
+      const cohenValue = <%= @cohens_d %>;
       let color;
 
       if (cohenValue === 0) {
