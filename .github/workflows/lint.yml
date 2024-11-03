@@ -19,7 +19,7 @@ jobs:
         uses: tj-actions/changed-files@v42
         with:
           files: |
-            **/*.{rb,ru,erb,rake,gemspec}
+            **/*.{rb,ru,rake,gemspec}
             Gemfile
             jmeter_perf.gemspec
           files_ignore: |
