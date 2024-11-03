@@ -56,6 +56,23 @@ RSpec.describe JmeterPerf::Report::Comparator do
     it "sets a human-readable rating" do
       expect(comparator.human_rating).to be_a(String)
     end
+    it "sets the correct human-readable rating for various Cohen's D values", :aggregate_failures do
+      ratings = {
+        -0.8 => "Large decrease",
+        -0.5 => "Medium decrease",
+        -0.2 => "Small decrease",
+        0.0 => "Negligible change",
+        0.2 => "Small increase",
+        0.5 => "Medium increase",
+        0.8 => "Large increase"
+      }
+
+      ratings.each do |d_value, expected_rating|
+        comparator.instance_variable_set(:@cohens_d, d_value)
+        comparator.send(:set_diff_rating)
+        expect(comparator.human_rating).to eq(expected_rating)
+      end
+    end
   end
 
   describe "#pass?" do

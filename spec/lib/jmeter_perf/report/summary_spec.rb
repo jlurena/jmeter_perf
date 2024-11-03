@@ -20,6 +20,7 @@ RSpec.describe JmeterPerf::Report::Summary do
     before do
       File.open(output_file, "w") do |file|
         file.puts "Metric,Value"
+        file.puts "Name,Test Summary"
         file.puts "Average Response Time,300.0"
         file.puts "Error Percentage,5.0"
         file.puts "Max Response Time,1000"
@@ -43,6 +44,7 @@ RSpec.describe JmeterPerf::Report::Summary do
     it "reads the CSV report and sets the appropriate attributes" do
       summary = described_class.read(output_file)
 
+      expect(summary.name).to eq("Test Summary")
       expect(summary.avg).to eq(300.0)
       expect(summary.error_percentage).to eq(5.0)
       expect(summary.max).to eq(1000)
@@ -120,9 +122,6 @@ RSpec.describe JmeterPerf::Report::Summary do
       summary.total_errors = 0
       summary.total_bytes = 0
 
-      # Start the async reading in a separate thread
-      summary.stream_jtl_async
-
       # Simulate writing to the file in chunks
       Thread.new do
         File.open(file_path, "w") do |file|
@@ -139,14 +138,35 @@ RSpec.describe JmeterPerf::Report::Summary do
           file.write "\",25,0,12\n" # Complete last line
           file.puts "\"bad csv line,"
         end
-        summary.finish! # Signal processing completion
       end.join
+
+      summary.finish!
+      # Start the async reading in a separate thread
+      summary.stream_jtl_async.join
 
       # Verify the results after processing is guaranteed to be complete
       expect(summary.total_requests).to eq(4)
       expect(summary.total_errors).to eq(1)
       expect(summary.total_bytes).to eq(5120)
       expect(summary.csv_error_lines).to eq([6])
+    end
+
+    context "respects timeout to prevent deadlock" do
+      let(:timeout) { 0.1 }
+      let(:summary) { described_class.new(file_path: file_path, jtl_read_timeout: timeout) }
+      it "Has no deadlock" do
+        writing_thread = Thread.new do
+          File.open(file_path, "w") do |file|
+            file.puts "timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect" # Header line
+            # Incomplete line without newline character
+            file.write "#{Time.now.to_i * 1000},100,label,200,OK,thread1,text,true,,1024,512,1,2,http://test.com,20,0,10"
+          end
+          sleep timeout * 10 # Wait for the timeout to trigger
+        end
+        streaming_thread = summary.stream_jtl_async
+        expect { streaming_thread.join }.to raise_error(Timeout::Error).and output.to_stderr
+        writing_thread.terminate
+      end
     end
   end
 

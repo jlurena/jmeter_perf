@@ -132,7 +132,7 @@ module JmeterPerf
       # @param file_path [String] the file path of the performance file to summarize. Either a JTL or CSV file.
       # @param name [String, nil] an optional name for the summary, derived from the file path if not provided (default: nil)
       # @param jtl_read_timeout [Integer] the maximum number of seconds to wait for a line read (default: 3)
-      def initialize(file_path:, name: nil, jtl_read_timeout: 3)
+      def initialize(file_path:, name: nil, jtl_read_timeout: 30)
         @name = name || file_path.to_s.tr("/", "_")
         @jtl_read_timeout = jtl_read_timeout
         @finished = false
@@ -154,12 +154,12 @@ module JmeterPerf
         @end_time = nil
       end
 
-      # Marks the summary as finished, allowing any pending asynchronous operations to complete.
+      # Marks the summary as finished and joins the processing thread.
       #
       # @return [void]
       def finish!
         @finished = true
-        @processing_jtl_thread.join if @processing_jtl_thread&.alive?
+        @processing_jtl_thread&.join
       end
 
       # Generates a CSV report with the given output file.
@@ -187,23 +187,34 @@ module JmeterPerf
       end
 
       # Starts streaming and processing JTL file content asynchronously.
-      #
+      # @note Once streaming, in order to finish processing, call `finish!` otherwise it will continue indefinitely.
       # @return [Thread] a thread that handles the asynchronous file streaming and parsing
       def stream_jtl_async
         @processing_jtl_thread = Thread.new do
-          sleep 0.1 until File.exist?(@file_path) # Wait for the file to be created
+          Timeout.timeout(@jtl_read_timeout) do
+            sleep 0.1 until File.exist?(@file_path) # Wait for the file to be created
+          end
 
           File.open(@file_path, "r") do |file|
-            file.seek(0, IO::SEEK_END)
             until @finished && file.eof?
-              line = file.gets
-              next unless line # Skip if no line was read
+              line = nil
 
+              # Protect against blocking reads that are still in progress
+              Timeout.timeout(@jtl_read_timeout) do
+                line = file.gets
+                sleep 0.1 until line || file.eof? || @finished
+              end
+
+              # Skip if the line is nil. Could be EOF but not yet marked as finished or vice versa.
+              next if line.nil?
               # Process only if the line is complete (ends with a newline)
               read_until_complete_line(file, line)
             end
           end
         end
+
+        @processing_jtl_thread.abort_on_exception = true
+        @processing_jtl_thread
       end
 
       # Summarizes the collected data by calculating statistical metrics and error rates.
@@ -230,8 +241,7 @@ module JmeterPerf
         end
         parse_csv_row(line)
       rescue Timeout::Error
-        puts "Timeout waiting for line to complete: #{line}"
-        raise
+        raise Timeout::Error, "Timed out reading JTL file at line #{file.lineno}"
       rescue CSV::MalformedCSVError
         @csv_error_lines << file.lineno
       end

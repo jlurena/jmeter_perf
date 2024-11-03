@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require "simplecov"
+
 SimpleCov.start do
   add_filter "/spec/"
   add_filter "/lib/jmeter_perf/dsl/"
 end
 
 require "jmeter_perf"
+require "jmeter_perf/rspec_matchers"
 
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
 RSpec.configure do |config|

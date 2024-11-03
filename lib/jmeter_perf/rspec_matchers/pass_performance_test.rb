@@ -17,6 +17,11 @@ RSpec::Matchers.define :pass_performance_test do
     @cohen_limit = limit
   end
 
+  chain :with do |options|
+    @cohen_limit = options[:cohen_limit]
+    @effect_size = options[:effect_size]
+  end
+
   match do |comparator|
     if comparator.is_a?(JmeterPerf::Report::Comparator)
       comparator.pass?(
