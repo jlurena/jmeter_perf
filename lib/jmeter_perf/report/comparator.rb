@@ -25,8 +25,21 @@ module JmeterPerf
         huge: 2.0      # huge
       }
 
-      # Valid effect size directions
-      EFFECT_SIZE_DIRECTION = %i[positive negative both]
+      COMPARISON_REPORT_HEADER = [
+        "Label",
+        "Total Requests",
+        "Total Elapsed Time",
+        "RPM",
+        "Errors",
+        "Error %",
+        "Min",
+        "Max",
+        "Avg",
+        "SD",
+        "P10",
+        "P50",
+        "P95"
+      ]
 
       # Initializes a Comparator instance to compare two reports.
       #
@@ -40,49 +53,78 @@ module JmeterPerf
         compare_reports!
       end
 
-      # Checks if the comparison passes based on Cohen's D and effect size.
+      # Checks if the comparison passes based on Cohen's D and effect size threshold.
       # @note If no Cohen's D limit is provided, the `effect_size` threshold is used.
-      # @param cohens_d_limit [Float, nil] optional limit for Cohen's D (default: nil)
+      # @note Positive effect size indicates an increase in performance and is considered a pass.
+      # @param cohens_d_limit [Float, nil] optional negative limit for Cohen's D
       # @param effect_size [Symbol] the desired effect size threshold (default: :vsmall).
       #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_LIMITS} for options.
-      # @param direction [Symbol] the direction of comparison, e.g., :positive (default: :both)
-      #   See {JmeterPerf::Report::Comparator::EFFECT_SIZE_DIRECTION} for options.
-      # @raise [ArgumentError] if the effect size or direction is invalid
+      # @raise [ArgumentError] if the effect size is invalid
       # @return [Boolean] true if comparison meets the criteria
-      def pass?(cohens_d_limit: nil, effect_size: :vsmall, direction: :both)
+      def pass?(cohens_d_limit: nil, effect_size: :vsmall)
         limit = cohens_d_limit || EFFECT_SIZE_LIMITS[effect_size]
         raise ArgumentError, "Invalid effect size: #{effect_size}" unless limit
-
-        raise ArgumentError, "Invalid direction: #{direction}" unless EFFECT_SIZE_DIRECTION.include?(direction)
-
-        case direction
-        when :positive
-          cohens_d >= limit
-        when :negative
-          cohens_d <= -limit
-        when :both
-          cohens_d >= limit || !(cohens_d <= -limit)
-        end
+        cohens_d >= -limit.abs
       end
 
       # Generates comparison reports in specified formats.
       #
       # @param output_dir [String] the directory for output files (default: ".")
-      # @param output_format [Symbol] the format for the report, e.g., :html, :csv (default: :all)
+      # @param output_format [Symbol] the format for the report, e.g., :html, :csv, :stdout (default: :all)
       # @raise [ArgumentError] if the output format is invalid
       # @return [void]
       def generate_reports(output_dir: ".", output_format: :all)
-        generator = Generator.new(self, [@base_report, @test_report])
-
         case output_format
         when :all
-          generator.generate_report(File.join(output_dir, "#{@name}_comparison_report.html"), :html)
-          generator.generate_report(File.join(output_dir, "#{@name}_comparison_report.csv"), :csv)
-        when :html, :csv
-          generator.generate_report(File.join(output_dir, "#{@name}_comparison_report.#{output_format}"), output_format)
+          generate_html_report(File.join(output_dir, "#{@name}_comparison_report.html"))
+          generate_csv_report(File.join(output_dir, "#{@name}_comparison_report.csv"))
+          print_comparison
+        when :html
+          generate_html_report(File.join(output_dir, "#{@name}_comparison_report.html"))
+        when :csv
+          generate_csv_report(File.join(output_dir, "#{@name}_comparison_report.csv"))
+        when :stdout
+          print_comparison
         else
           raise ArgumentError, "Invalid output format: #{output_format}"
         end
+      end
+
+      def to_s
+        report_text = "Comparison Report\n"
+        report_text << "Cohen's D: #{@cohens_d}\n"
+        report_text << "Human Rating: #{@human_rating}\n"
+        report_text << "-" * 135 + "\n"
+
+        header_format = "%-15s %-17s %-18s %-8s %-8s %-9s %-7s %-7s %-8s %-8s %-8s %-8s %-8s\n"
+        row_format = "%-15s %-17d %-18d %-8.2f %-8d %-9.2f %-7d %-7d %-8.2f %-8.2f %-8.2f %-8.2f %-8.2f\n"
+
+        report_text << sprintf(header_format, *COMPARISON_REPORT_HEADER)
+        report_text << "-" * 135 + "\n"
+
+        [@base_report, @test_report].each_with_index do |report, index|
+          report_text << sprintf(row_format,
+            (index == 0) ? "Base Metric" : "Test Metric",
+            report.total_requests,
+            report.total_run_time,
+            report.rpm,
+            report.total_errors,
+            report.error_percentage,
+            report.min,
+            report.max,
+            report.avg,
+            report.std,
+            report.p10,
+            report.p50,
+            report.p95)
+        end
+
+        report_text << "-" * 135 + "\n"
+        report_text
+      end
+
+      def print_comparison
+        puts self
       end
 
       private
@@ -151,108 +193,43 @@ module JmeterPerf
         @human_rating = "#{s_mag} #{s_dir}"
       end
 
-      # Generator is responsible for generating comparison reports in HTML and CSV formats.
-      class Generator
-        # Initializes a Generator instance to handle report generation.
-        #
-        # @param comparator [Comparator] the comparator instance
-        # @param reports [Array<Summary>] an array of performance reports
-        def initialize(comparator, reports)
-          @comparator = comparator
-          @reports = reports
-        end
+      # Generates an HTML report.
+      #
+      # @param output_path [String] the path to save the HTML report
+      # @return [void]
+      def generate_html_report(output_path)
+        template_path = File.join(__dir__, "..", "views", "report_template.html.erb")
+        template = File.read(template_path)
+        result = ERB.new(template).result(binding)
+        File.write(output_path, result)
+      end
 
-        # Generates a report in the specified format at the given path.
-        #
-        # @param output_path [String] the path to save the generated report
-        # @param output_format [Symbol] the format for the report, e.g., :html or :csv
-        # @return [void]
-        def generate_report(output_path, output_format)
-          case output_format
-          when :html
-            generate_html_report(output_path)
-          when :csv
-            generate_csv_report(output_path)
-          else
-            print_report(output_path)
-          end
-        end
-
-        # Generates an HTML report.
-        #
-        # @param output_path [String] the path to save the HTML report
-        # @return [void]
-        def generate_html_report(output_path)
-          template_path = File.join(__dir__, "..", "views", "report_template.html.erb")
-          template = File.read(template_path)
-          result = ERB.new(template).result(binding)
-          File.write(output_path, result)
-        end
-
-        # Generates a CSV report.
-        #
-        # @param output_path [String] the path to save the CSV report
-        # @return [void]
-        def generate_csv_report(output_path)
-          CSV.open(output_path, "wb") do |csv|
-            csv << ["Label", "Total Requests", "Total Elapsed Time", "RPM", "Errors", "Error %", "Min", "Max", "Avg", "SD", "P10", "P50", "P95"]
-            @reports.each_with_index do |report, index|
-              csv << [
-                (index == 0) ? "Base Metric" : "Test Metric",
-                report.total_requests,
-                report.total_elapsed_time,
-                sprintf("%.2f", report.rpm),
-                report.total_errors,
-                sprintf("%.2f", report.error_percentage),
-                report.min,
-                report.max,
-                sprintf("%.2f", report.avg),
-                sprintf("%.2f", report.std),
-                sprintf("%.2f", report.p10),
-                sprintf("%.2f", report.p50),
-                sprintf("%.2f", report.p95)
-              ]
-            end
-          end
-        end
-
-        # Prints a plain text version of the report to standard output.
-        #
-        # @param output_path [String] the path for plain text output
-        # @return [void]
-        def print_report(output_path)
-          report_text = "Comparison Report\n\n"
-          report_text << format_line(["Label", "Requests", "Errors", "Error %", "Min", "Median", "Avg", "Max", "Std", "P10", "P50", "P95"])
-          report_text << "-" * 90 + "\n"
-          @reports.each_with_index do |report, index|
-            report_text << format_line([
+      # Generates a CSV report.
+      #
+      # @param output_path [String] the path to save the CSV report
+      # @return [void]
+      def generate_csv_report(output_path)
+        CSV.open(output_path, "wb") do |csv|
+          csv << COMPARISON_REPORT_HEADER
+          [@base_report, @test_report].each_with_index do |report, index|
+            csv << [
               (index == 0) ? "Base Metric" : "Test Metric",
               report.total_requests,
+              report.total_run_time,
+              sprintf("%.2f", report.rpm),
               report.total_errors,
               sprintf("%.2f", report.error_percentage),
               report.min,
-              report.median,
-              sprintf("%.2f", report.avg),
               report.max,
+              sprintf("%.2f", report.avg),
               sprintf("%.2f", report.std),
               sprintf("%.2f", report.p10),
               sprintf("%.2f", report.p50),
               sprintf("%.2f", report.p95)
-            ])
+            ]
           end
-          puts report_text
-        end
-
-        # Formats a line for plain text output.
-        #
-        # @param values [Array<String, Numeric>] the values to format
-        # @return [String] the formatted line
-        def format_line(values)
-          values.map { |v| v.to_s.ljust(10) }.join(" ") + "\n"
         end
       end
-
-      private_constant :Generator
     end
   end
 end

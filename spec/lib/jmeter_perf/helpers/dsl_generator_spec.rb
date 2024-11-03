@@ -36,13 +36,9 @@ RSpec.describe JmeterPerf::Helpers::DSLGenerator do
   describe "#generate" do
     subject(:dsl_generator) { described_class.new(dsl_dir:, idl_xml_path:) }
 
-    it "parses the idl.xml file" do
-      expect { dsl_generator.generate }.not_to raise_error
-    end
-
     it "creates the DSL directory if it does not exist" do
       expect(FileUtils).to receive(:mkdir_p).with(dsl_dir)
-      dsl_generator.generate
+      expect { dsl_generator.generate }.to output.to_stdout
     end
 
     it "generates a DSL method file for each test element in the XML" do
@@ -79,7 +75,7 @@ RSpec.describe JmeterPerf::Helpers::DSLGenerator do
       RUBY
 
       expect(File).to receive(:write).with("#{dsl_dir}/some_test.rb", expected_dsl_content)
-      dsl_generator.generate
+      expect { dsl_generator.generate }.to output.to_stdout
     end
 
     it "writes the DSL methods documentation to DSL.md" do
@@ -91,7 +87,7 @@ RSpec.describe JmeterPerf::Helpers::DSLGenerator do
         .chomp
 
       expect(File).to receive(:write).with("DSL.md", expected_md_content)
-      dsl_generator.generate
+      expect { dsl_generator.generate }.to output.to_stdout
     end
 
     it "updates the RBS file with the generated DSL methods" do
@@ -106,7 +102,7 @@ RSpec.describe JmeterPerf::Helpers::DSLGenerator do
       RBS
 
       expect(File).to receive(:write).with(rbs_file_path, expected_rbs_content)
-      dsl_generator.generate
+      expect { dsl_generator.generate }.to output.to_stdout
     end
   end
 end

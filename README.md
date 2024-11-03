@@ -1,5 +1,6 @@
 # JmeterPerf
 Dynamically generate JMeter test plans, run performance tests, generate reports, compare reports and more using JMeter and Ruby.
+Inspired by the now archived/defunct [ruby-jmeter](https://github.com/flood-io/ruby-jmeter).
 
 ## Installation
 
@@ -17,7 +18,11 @@ Check out the Wiki! https://github.com/jlurena/jmeter_perf/wiki
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies.
+Run `rake` to run the linter and tests.
+You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+Additionally, there is an `example` Rails Application you can play with.
 
 ## Contributing
 

@@ -57,28 +57,28 @@
   </style>
 </head>
 <body>
-  <% if @comparator.name %>
-    <h2>Comparison Report for <span style="text-decoration: underline;"><%= @comparator.name %></span></h2>
+  <% if @name %>
+    <h2>Comparison Report for <span style="text-decoration: underline;"><%= @name %></span></h2>
   <% end %>
   <div class="summary-box" id="summary-box">
     <b>Report Generated:</b> <%= Time.now.strftime("%Y-%m-%d %H:%M:%S") %><br>
-    <b>Cohen's D:</b> <%= @comparator.cohens_d %><br>
-    <b>T Statistics:</b> <%= @comparator.t_statistic %><br>
-    <b>Summary:</b> <%= @comparator.human_rating %> in performance
+    <b>Cohen's D:</b> <%= @cohens_d %><br>
+    <b>T Statistic:</b> <%= @t_statistic %><br>
+    <b>Summary:</b> <%= @human_rating %> in performance
   </div>
   <table>
     <tr class="header-row">
-      <% ['Label', 'Total Requests', 'Total Elapsed Time', 'RPM', 'Errors', 'Error %', 'Min', 'Max', 'Avg', 'SD', 'P10', 'P50', 'P95'].each do |header| %>
+      <% JmeterPerf::Report::Comparator::COMPARISON_REPORT_HEADER.each do |header| %>
         <td class="tooltip"><%= header %>
           <span class="tooltiptext"><%= "Description for #{header}" %></span>
         </td>
       <% end %>
     </tr>
-    <% @reports.each_with_index do |report, index| %>
+    <% [@base_report, @test_report].each_with_index do |report, index| %>
       <tr>
         <td><%= index == 0 ? "Base Metric" : "Test Metric" %></td>
         <td><%= report.total_requests %></td>
-        <td><%= report.total_elapsed_time %></td>
+        <td><%= report.total_run_time %></td>
         <td><%= sprintf('%.2f', report.rpm) %></td>
         <td class="<%= 'bad' if report.total_errors > 0 %>"><%= report.total_errors %></td>
         <td class="<%= 'bad' if report.error_percentage > 0.0 %>"><%= sprintf('%.2f', report.error_percentage) %></td>
@@ -96,7 +96,7 @@
     import ColorScale from "https://cdn.skypack.dev/color-scales";
     document.addEventListener('DOMContentLoaded', function () {
       const summaryBox = document.getElementById('summary-box');
-      const cohenValue = <%= @comparator.cohens_d %>;
+      const cohenValue = <%= @cohens_d %>;
       let color;
 
       if (cohenValue === 0) {

@@ -13,26 +13,20 @@ RSpec::Matchers.define :pass_performance_test do
     @effect_size = effect_size
   end
 
-  chain :with_direction do |direction|
-    @direction = direction
-  end
-
   chain :with_cohen_d_limit do |limit|
     @cohen_limit = limit
   end
 
   chain :with do |options|
-    @effect_size = options[:effect_size]
-    @direction = options[:direction]
     @cohen_limit = options[:cohen_limit]
+    @effect_size = options[:effect_size]
   end
 
   match do |comparator|
     if comparator.is_a?(JmeterPerf::Report::Comparator)
       comparator.pass?(
         cohens_d_limit: @cohen_limit || nil,
-        effect_size: @effect_size || :vsmall,
-        direction: @direction || :both
+        effect_size: @effect_size || :vsmall
       )
     else
       false
@@ -41,7 +35,7 @@ RSpec::Matchers.define :pass_performance_test do
 
   failure_message do |comparator|
     if comparator.is_a?(JmeterPerf::Report::Comparator)
-      "#{comparator.name} failed: #{comparator.cohens_d} | #{comparator.human_rating}"
+      "Performance Test Failed\n#{comparator}"
     else
       "#{comparator.class.name} is not a valid comparator"
     end
@@ -49,7 +43,7 @@ RSpec::Matchers.define :pass_performance_test do
 
   failure_message_when_negated do |comparator|
     if comparator.is_a?(JmeterPerf::Report::Comparator)
-      "#{comparator.name} passed: #{comparator.cohens_d} | #{comparator.human_rating}"
+      "Performance Test Passed\n#{comparator}"
     else
       "#{comparator.class.name} is not a valid comparator"
     end

@@ -100,6 +100,7 @@ module JmeterPerf
       out_cmd_log: "jmeter-cmd.log",
       jtl_read_timeout: 3
     )
+      summary = nil
       jmx(out_jmx:)
       logger.warn "Executing #{out_jmx} test plan locally ..."
 
@@ -108,15 +109,14 @@ module JmeterPerf
       CMD
 
       summary = JmeterPerf::Report::Summary.new(file_path: out_jtl, name:, jtl_read_timeout:)
-      jtl_process_thread = summary.stream_jtl_async
+      summary.stream_jtl_async
 
       File.open(out_cmd_log, "w") do |f|
         pid = Process.spawn(cmd, out: f, err: [:child, :out])
         Process.waitpid(pid)
       end
 
-      summary.finish!         # Notify jtl collection that JTL cmd finished
-      jtl_process_thread.join # Join main thread and wait for it to finish
+      summary.finish!         # Notify jtl collection that JTL cmd finished and waits
 
       unless $?.exitstatus.zero?
         logger.error("Failed to run #{cmd}. See #{out_cmd_log} and #{out_jmeter_log} for details.")
@@ -126,9 +126,8 @@ module JmeterPerf
       summary.summarize_data!
       logger.info "[Test Plan Execution Completed Successfully] JTL saved to: #{out_jtl}\n"
       summary
-    rescue
-      summary.finish!
-      raise
+    ensure
+      summary&.finish!
     end
 
     private
