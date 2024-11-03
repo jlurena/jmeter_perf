@@ -122,6 +122,8 @@ RSpec.describe JmeterPerf::Report::Summary do
       summary.total_errors = 0
       summary.total_bytes = 0
 
+      summary.stream_jtl_async
+
       # Simulate writing to the file in chunks
       Thread.new do
         File.open(file_path, "w") do |file|
@@ -141,8 +143,7 @@ RSpec.describe JmeterPerf::Report::Summary do
       end.join
 
       summary.finish!
-      # Start the async reading in a separate thread
-      summary.stream_jtl_async.join
+      summary.summarize_data!
 
       # Verify the results after processing is guaranteed to be complete
       expect(summary.total_requests).to eq(4)
@@ -154,7 +155,9 @@ RSpec.describe JmeterPerf::Report::Summary do
     context "respects timeout to prevent deadlock" do
       let(:timeout) { 0.1 }
       let(:summary) { described_class.new(file_path: file_path, jtl_read_timeout: timeout) }
-      it "Has no deadlock" do
+      it "Has no deadlock and timesout when not marked as finished" do
+        summary.stream_jtl_async
+
         writing_thread = Thread.new do
           File.open(file_path, "w") do |file|
             file.puts "timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect" # Header line
@@ -163,8 +166,10 @@ RSpec.describe JmeterPerf::Report::Summary do
           end
           sleep timeout * 10 # Wait for the timeout to trigger
         end
-        streaming_thread = summary.stream_jtl_async
-        expect { streaming_thread.join }.to raise_error(Timeout::Error).and output.to_stderr
+
+        expect {
+          summary.instance_variable_get(:@processing_jtl_thread).join
+        }.to raise_error(Timeout::Error).and output.to_stderr
         writing_thread.terminate
       end
     end

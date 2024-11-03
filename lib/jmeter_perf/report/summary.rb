@@ -188,33 +188,27 @@ module JmeterPerf
 
       # Starts streaming and processing JTL file content asynchronously.
       # @note Once streaming, in order to finish processing, call `finish!` otherwise it will continue indefinitely.
-      # @return [Thread] a thread that handles the asynchronous file streaming and parsing
+      # @return [void]
       def stream_jtl_async
         @processing_jtl_thread = Thread.new do
-          Timeout.timeout(@jtl_read_timeout) do
+          Timeout.timeout(@jtl_read_timeout, nil, "Timed out attempting to open JTL File #{@file_path}") do
             sleep 0.1 until File.exist?(@file_path) # Wait for the file to be created
           end
 
           File.open(@file_path, "r") do |file|
             until @finished && file.eof?
-              line = nil
+              line = file.gets
 
-              # Protect against blocking reads that are still in progress
-              Timeout.timeout(@jtl_read_timeout) do
-                line = file.gets
-                sleep 0.1 until line || file.eof? || @finished
-              end
-
-              # Skip if the line is nil. Could be EOF but not yet marked as finished or vice versa.
+              # Skip if the line is nil. This can happen if not @finished, and we are at EOF
               next if line.nil?
-              # Process only if the line is complete (ends with a newline)
+              # Process only if the line is complete. JMeter always finishes with a newline
               read_until_complete_line(file, line)
             end
           end
         end
 
         @processing_jtl_thread.abort_on_exception = true
-        @processing_jtl_thread
+        nil
       end
 
       # Summarizes the collected data by calculating statistical metrics and error rates.
@@ -232,16 +226,19 @@ module JmeterPerf
       private
 
       def read_until_complete_line(file, line)
-        return if file.lineno == 1 # Skip the header row
-        Timeout.timeout(@jtl_read_timeout) do
-          until line.end_with?("\n")
+        lineno = file.lineno
+        return if lineno == 1 # Skip the header row
+        Timeout.timeout(@jtl_read_timeout, nil, "Timed out processing line #{lineno}") do
+          # If finished and eof but no newline: Means processing was interrupted
+          # JMeter always finishes with a new line in the JTL file
+          until line.end_with?("\n") || (file.eof? && @finished)
             sleep 0.1
-            line += file.gets.to_s
+            line += file.gets
           end
         end
         parse_csv_row(line)
       rescue Timeout::Error
-        raise Timeout::Error, "Timed out reading JTL file at line #{file.lineno}"
+        raise Timeout::Error, "Timed out reading JTL file at line #{lineno}"
       rescue CSV::MalformedCSVError
         @csv_error_lines << file.lineno
       end
