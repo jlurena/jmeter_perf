@@ -61,7 +61,7 @@ module JmeterPerf
       @root = Nokogiri::XML(JmeterPerf::Helpers::String.strip_heredoc(
         <<-EOF
           <?xml version="1.0" encoding="UTF-8"?>
-          <jmeterTestPlan version="1.2" properties="3.1" jmeter="3.1" ruby-jmeter="3.0">
+          <jmeterTestPlan version="1.2" properties="3.1" jmeter="3.1" jmeterperf="#{JmeterPerf::VERSION}">
           <hashTree>
           </hashTree>
           </jmeterTestPlan>
@@ -74,17 +74,17 @@ module JmeterPerf
 
     # Saves the test plan as a JMX file.
     #
-    # @param out_jmx [String] The path for the output JMX file (default: `"ruby-jmeter.jmx"`).
-    def jmx(out_jmx: "ruby-jmeter.jmx")
+    # @param out_jmx [String] The path for the output JMX file (default: `"jmeter_perf.jmx"`).
+    def jmx(out_jmx: "jmeter_perf.jmx")
       File.write(out_jmx, doc.to_xml(indent: 2))
       logger.info "JMX saved to: #{out_jmx}"
     end
 
     # Runs the test plan with the specified configuration.
     #
-    # @param name [String] The name of the test run (default: `"ruby-jmeter"`).
+    # @param name [String] The name of the test run (default: `"jmeter_perf"`).
     # @param jmeter_path [String] Path to the JMeter executable (default: `"jmeter"`).
-    # @param out_jmx [String] The filename for the output JMX file (default: `"ruby-jmeter.jmx"`).
+    # @param out_jmx [String] The filename for the output JMX file (default: `"jmeter_perf.jmx"`).
     # @param out_jtl [String] The filename for the output JTL file (default: `"jmeter.jtl"`).
     # @param out_jmeter_log [String] The filename for the JMeter log file (default: `"jmeter.log"`).
     # @param out_cmd_log [String] The filename for the command log file (default: `"jmeter-cmd.log"`).
@@ -92,9 +92,9 @@ module JmeterPerf
     # @return [JmeterPerf::Report::Summary] The summary report of the test run.
     # @raise [RuntimeError] If the test execution fails.
     def run(
-      name: "ruby-jmeter",
+      name: "jmeter_perf",
       jmeter_path: "jmeter",
-      out_jmx: "ruby-jmeter.jmx",
+      out_jmx: "jmeter_perf.jmx",
       out_jtl: "jmeter.jtl",
       out_jmeter_log: "jmeter.log",
       out_cmd_log: "jmeter-cmd.log",

@@ -9,11 +9,11 @@ module JmeterPerf
     attr_accessor root: ::Nokogiri::XML::Document
 
     def initialize: (params: Hash[Symbol, untyped] ?) -> void
-    def jmx: (out_jmx: String = "ruby-jmeter.jmx") -> void
+    def jmx: (out_jmx: String = "jmeter_perf.jmx") -> void
     def run: (
-      name: String = "ruby-jmeter",
+      name: String = "jmeter_perf",
       jmeter_path: String = "jmeter",
-      out_jmx: String = "ruby-jmeter.jmx",
+      out_jmx: String = "jmeter_perf.jmx",
       out_jtl: String = "jmeter.jtl",
       out_jmeter_log: String = "jmeter.log",
       out_cmd_log: String = "jmeter-cmd.log",
