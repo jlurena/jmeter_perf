@@ -233,7 +233,7 @@ module JmeterPerf
           # JMeter always finishes with a new line in the JTL file
           until line.end_with?("\n") || (file.eof? && @finished)
             sleep 0.1
-            line += file.gets
+            line += file.gets.to_s
           end
         end
         parse_csv_row(line)
